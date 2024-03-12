@@ -1,6 +1,8 @@
 package BE.artifact.controller;
 
+import BE.artifact.model.Roles;
 import BE.artifact.model.User;
+import BE.artifact.model.UserRole;
 import BE.artifact.payload.request.LoginRequest;
 import BE.artifact.payload.request.SignUpRequest;
 import BE.artifact.payload.response.JwtResponse;
@@ -20,7 +22,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -79,38 +83,35 @@ public class UserController {
                 encoder.encode(signUpRequest.getPassword()));
 
         String strRoles = signUpRequest.getRole();
-//        Set<Roles> roles = new HashSet<>();
-//
-//        if (strRoles == null) {
-//            Roles userRole = roleRepository.findByName(UserRoles.ROLE_EMPLOYEE)
-//                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-//            roles.add(userRole);
-//        } else {
-//
-//            switch (strRoles) {
-//                case "ROLE_ADMIN" -> {
-//                    Roles adminRole = roleRepository.findByName(UserRoles.ROLE_ADMIN)
-//                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-//                    roles.add(adminRole);
-//                }
-//                case "ROLE_HR" -> {
-//                    Roles hrRole = roleRepository.findByName(UserRoles.ROLE_HR)
-//                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-//                    roles.add(hrRole);
-//                }
-//                default -> {
-//                    Roles employeeRole = roleRepository.findByName(UserRoles.ROLE_EMPLOYEE)
-//                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-//                    roles.add(employeeRole);
-//                }
-//            }
-//
-//        }
-//
-//        user.setRoles(roles);
+        Set<Roles> roles = new HashSet<>();
+
+        if (strRoles == null) {
+            Roles userRole = roleRepository.findByName(UserRole.ROLE_EMPLOYEE)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            roles.add(userRole);
+        } else {
+            switch (strRoles) {
+                case "ROLE_ADMIN" -> {
+                    Roles adminRole = roleRepository.findByName(UserRole.ROLE_ADMIN)
+                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    roles.add(adminRole);
+                }
+                case "ROLE_HR" -> {
+                    Roles hrRole = roleRepository.findByName(UserRole.ROLE_HR)
+                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    roles.add(hrRole);
+                }
+                default -> {
+                    Roles employeeRole = roleRepository.findByName(UserRole.ROLE_EMPLOYEE)
+                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    roles.add(employeeRole);
+                }
+            }
+
+        }
+        user.setRoles(roles);
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
-
 }

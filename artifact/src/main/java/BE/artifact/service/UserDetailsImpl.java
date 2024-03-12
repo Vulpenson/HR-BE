@@ -12,7 +12,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import static BE.artifact.model.UserRole.ROLE_USER;
 
 @Data
 public class UserDetailsImpl implements UserDetails {
@@ -42,11 +41,11 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     public static UserDetailsImpl build(User user) {
-        if (user.getRole() == null) {
-            user.setRole(ROLE_USER);
-        }
-        System.out.println(user.getRole());
-        GrantedAuthority authorities = new SimpleGrantedAuthority(user.getRole());
+//        if (user.getRoles() == null) {
+//            user.setRoles();
+//        }
+        System.out.println(user.getRoles());
+        GrantedAuthority authorities = new SimpleGrantedAuthority(user.getRoles().toString());
 
         return new UserDetailsImpl(
                 user.getUserID(),

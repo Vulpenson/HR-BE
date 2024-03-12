@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -57,9 +58,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 // Apply CORS
-                .cors(corsCustomizer -> {
-                    // Customize CORS if needed
-                })
+                .cors(Customizer.withDefaults())
                 // Disable CSRF as it's a stateless application
                 .csrf(AbstractHttpConfigurer::disable)
                 // Handle exceptions
@@ -88,7 +87,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // or specify a path pattern for more granular control
-                        .allowedOrigins("http://example.com") // specify the allowed origins
+                        .allowedOrigins("http://*") // specify the allowed origins
                         .allowedMethods("GET", "POST", "PUT", "DELETE") // specify the allowed methods
                         .allowedHeaders("*") // specify the allowed headers
                         .allowCredentials(true) // specify whether credentials are supported
