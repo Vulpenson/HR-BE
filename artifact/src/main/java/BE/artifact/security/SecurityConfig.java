@@ -57,7 +57,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // Apply CORS
                 .cors(Customizer.withDefaults())
                 // Disable CSRF as it's a stateless application
                 .csrf(AbstractHttpConfigurer::disable)
@@ -66,12 +65,9 @@ public class SecurityConfig {
                 // Stateless session management
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Configure authorization requests
-                .authorizeHttpRequests(authz -> authz
-                        .dispatcherTypeMatchers(HttpMethod.valueOf("/api/auth/**")).permitAll()
-                        .dispatcherTypeMatchers(HttpMethod.valueOf("/api/test/**")).permitAll()
-                        .dispatcherTypeMatchers(HttpMethod.valueOf("/roles/**")).permitAll()
-                        .dispatcherTypeMatchers(HttpMethod.valueOf("/admin/**")).permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth
+//                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 // Add JWT token filter
                 .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
@@ -84,15 +80,15 @@ public class SecurityConfig {
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // or specify a path pattern for more granular control
-                        .allowedOrigins("http://*") // specify the allowed origins
-                        .allowedMethods("GET", "POST", "PUT", "DELETE") // specify the allowed methods
-                        .allowedHeaders("*") // specify the allowed headers
-                        .allowCredentials(true) // specify whether credentials are supported
-                        .maxAge(3600); // specify the max age of the pre-flight request cache
-            }
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**") // or specify a path pattern for more granular control
+//                        .allowedOriginPatterns("http://*") // specify the allowed origins
+//                        .allowedMethods("GET", "POST", "PUT", "DELETE") // specify the allowed methods
+//                        .allowedHeaders("*") // specify the allowed headers
+//                        .allowCredentials(true) // specify whether credentials are supported
+//                        .maxAge(3600); // specify the max age of the pre-flight request cache
+//            }
         };
     }
 

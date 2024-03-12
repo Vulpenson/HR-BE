@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import java.util.Optional;
 
 @EnableJpaRepositories
-public interface RolesRepository extends JpaRepository<Roles, String> {
+public interface RolesRepository extends JpaRepository<Roles, Integer> {
     Optional<Roles> findByName(UserRole name);
 }
