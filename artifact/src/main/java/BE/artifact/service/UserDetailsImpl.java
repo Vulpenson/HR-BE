@@ -2,6 +2,7 @@ package BE.artifact.service;
 
 import java.io.Serial;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 import BE.artifact.model.User;
@@ -28,11 +29,10 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     private String password;
 
-    @Getter
-    private final GrantedAuthority authorities;
+    private final Collection<? extends GrantedAuthority> authorities;
 
     public UserDetailsImpl(Integer id, String username, String email, String password,
-                           GrantedAuthority authorities) {
+                           Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -41,11 +41,9 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     public static UserDetailsImpl build(User user) {
-//        if (user.getRoles() == null) {
-//            user.setRoles();
-//        }
+
         System.out.println(user.getRoles());
-        GrantedAuthority authorities = new SimpleGrantedAuthority(user.getRoles().toString());
+        Collection<? extends GrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(user.getRoles().toString()));
 
         return new UserDetailsImpl(
                 user.getUserID(),
@@ -57,7 +55,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return (Collection<? extends GrantedAuthority>) authorities;
+        return authorities;
     }
 
 

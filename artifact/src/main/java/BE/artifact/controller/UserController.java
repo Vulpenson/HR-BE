@@ -11,7 +11,7 @@ import BE.artifact.repository.RolesRepository;
 import BE.artifact.repository.UserRepository;
 import BE.artifact.security.jwt.JwtUtil;
 import BE.artifact.service.UserDetailsImpl;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

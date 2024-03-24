@@ -1,7 +1,7 @@
 package BE.artifact.repository;
 
 import BE.artifact.model.User;
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,10 +18,4 @@ public interface UserRepository extends JpaRepository<User, String> {
     Boolean existsByUsername(String username);
 
     Boolean existsByEmail(String email);
-
-    @Modifying
-    @Transactional
-    @Query("DELETE from User u WHERE u.username = :username")
-    void deleteByUsername(String username);
-
 }
