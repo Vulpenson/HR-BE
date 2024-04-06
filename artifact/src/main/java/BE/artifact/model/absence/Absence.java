@@ -28,4 +28,6 @@ public class Absence {
 
     @OneToMany(mappedBy = "absence", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<AbsenceDocument> documents = new ArrayList<>();
+
+    private boolean approved;
 }

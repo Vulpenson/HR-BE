@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,11 @@ public class AbsenceDocumentService {
     }
 
     public AbsenceDocument getDocument(Long id) {
-        return documentRepository.findById(id).orElseThrow(() -> new RuntimeException("Document not found with id " + id));
+        return documentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Document not found with id " + id));
+    }
+
+    public List<AbsenceDocument> getDocumentsByAbsenceId(Long absenceId) {
+        return documentRepository.findByAbsenceId(absenceId);
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/documents")
+@RequestMapping("/api/absence-documents")
 @RequiredArgsConstructor
 public class AbsenceDocumentController {
 
@@ -31,4 +31,6 @@ public class AbsenceDocumentController {
                 .header("Content-Disposition", "attachment; filename=\"" + document.getName() + "\"")
                 .body(document.getData());
     }
+
+
 }

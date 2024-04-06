@@ -25,9 +25,30 @@ public class AbsenceController {
         return absenceService.saveAbsence(absenceDTO);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Absence> getAllAbsences() {
         return absenceService.getAllAbsences();
+    }
+
+    //Absence for current user
+    @GetMapping("/current-user")
+    public List<Absence> getAbsencesForCurrentUser() {
+        return absenceService.getAbsencesForCurrentUser();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAbsence(@PathVariable Long id) {
+        return absenceService.deleteAbsence(id);
+    }
+
+    @PostMapping("/approve/{id}")
+    public ResponseEntity<Absence> approveAbsence(@PathVariable Long id) {
+        return absenceService.approveAbsence(id);
+    }
+
+    @PostMapping("/update/{id}")
+    public ResponseEntity<Absence> updateAbsence(@PathVariable Long id, @RequestBody AbsenceDTO absenceDTO) {
+        return absenceService.updateAbsence(id, absenceDTO);
     }
 
 }
