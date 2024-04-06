@@ -12,4 +12,5 @@ public class AbsenceDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private AbsenceType type; // e.g., VACATION, SICK_LEAVE
+    private Boolean approved;
 }

@@ -20,9 +20,14 @@ public class AbsenceController {
         this.absenceService = absenceService;
     }
 
-    @PostMapping
+    @PostMapping("/add-test")
     public ResponseEntity<Absence> addAbsence(@RequestBody AbsenceDTO absenceDTO) {
         return absenceService.saveAbsence(absenceDTO);
+    }
+
+    @PostMapping("/add-current-user")
+    public ResponseEntity<Absence> addAbsenceForCurrentUser(@RequestBody AbsenceDTO absenceDTO) {
+        return absenceService.addAbsenceForCurrentUser(absenceDTO);
     }
 
     @GetMapping("/all")

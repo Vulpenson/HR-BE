@@ -4,6 +4,7 @@ import BE.artifact.dto.AbsenceDTO;
 import BE.artifact.model.User;
 import BE.artifact.model.absence.Absence;
 import BE.artifact.repository.AbsenceRepository;
+import BE.artifact.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,23 @@ import java.util.List;
 public class AbsenceService {
 
     private final AbsenceRepository absenceRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     public ResponseEntity<Absence> saveAbsence(AbsenceDTO absenceDTO) {
-        Absence absence = mapDtoToEntity(absenceDTO);
+        Absence absence = mapDtoToEntity(absenceDTO, null);
+        Absence savedAbsence = absenceRepository.save(absence);
+        return ResponseEntity.ok(savedAbsence);
+    }
+
+    public ResponseEntity<Absence> addAbsenceForCurrentUser(AbsenceDTO absenceDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentEmail = authentication.getName();
+        System.out.println("Current email: " + currentEmail);
+
+        User user = userRepository.findByEmail(currentEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Absence absence = mapDtoToEntity(absenceDTO, user);
         Absence savedAbsence = absenceRepository.save(absence);
         return ResponseEntity.ok(savedAbsence);
     }
@@ -30,11 +44,13 @@ public class AbsenceService {
         return absenceRepository.findAll();
     }
 
-    private Absence mapDtoToEntity(AbsenceDTO absenceDTO) {
+    private Absence mapDtoToEntity(AbsenceDTO absenceDTO, User user) {
         Absence absence = new Absence();
+        absence.setUser(user);
         absence.setStartDate(absenceDTO.getStartDate());
         absence.setEndDate(absenceDTO.getEndDate());
         absence.setType(absenceDTO.getType());
+        absence.setApproved(absenceDTO.getApproved());
         // Set the user reference here if necessary
         return absence;
     }
@@ -74,6 +90,7 @@ public class AbsenceService {
         absence.setStartDate(absenceDTO.getStartDate());
         absence.setEndDate(absenceDTO.getEndDate());
         absence.setType(absenceDTO.getType());
+        absence.setApproved(absenceDTO.getApproved());
         Absence updatedAbsence = absenceRepository.save(absence);
         return ResponseEntity.ok(updatedAbsence);
     }

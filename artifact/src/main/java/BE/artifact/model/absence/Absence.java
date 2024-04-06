@@ -1,6 +1,7 @@
 package BE.artifact.model.absence;
 
 import BE.artifact.model.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +20,9 @@ public class Absence {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user; // Assuming you have a User entity for authentication
 
     private LocalDate startDate;

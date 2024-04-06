@@ -1,6 +1,7 @@
 package BE.artifact.model;
 
 import BE.artifact.model.absence.Absence;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +36,8 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
     private List<Absence> absences;
 
     @Override
