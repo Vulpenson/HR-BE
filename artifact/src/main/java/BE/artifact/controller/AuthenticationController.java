@@ -25,11 +25,19 @@ public class AuthenticationController {
     @PostMapping("/signup")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<JwtAuthenticationResponse> signup(@RequestBody SignUpRequest request) {
-        return ResponseEntity.ok(authenticationService.signup(request));
+        try {
+            JwtAuthenticationResponse response = authenticationService.signup(request);
+            logger.info("User signed up successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            logger.info("User already exists");
+            throw new RuntimeException(e);
+        }
     }
 
     @PostMapping("/signin")
     public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SignInRequest request) {
+        logger.info("User signed in successfully");
         return ResponseEntity.ok(authenticationService.signin(request));
     }
 
@@ -38,6 +46,7 @@ public class AuthenticationController {
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         try {
             authenticationService.deleteUser(id);
+            logger.info("User deleted successfully");
         } catch (Exception e) {
             logger.info("User not found");
             throw new RuntimeException(e);
