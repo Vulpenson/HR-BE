@@ -22,6 +22,15 @@ public class OnboardingService {
         return ResponseEntity.ok(onboardingRepository.save(onboarding));
     }
 
+    public Iterable<Onboarding> getAllOnboarding() {
+        return onboardingRepository.findAll();
+    }
+
+    public Onboarding getOnboardingForUser(User user) {
+        return onboardingRepository.findById(user.getId().longValue())
+                .orElseThrow(() -> new RuntimeException("Onboarding process not found"));
+    }
+
     @Transactional
     public void updateBadgeStatus(Long onboardingId, boolean status) {
         Onboarding onboarding = onboardingRepository.findById(onboardingId)
@@ -36,5 +45,10 @@ public class OnboardingService {
                 .orElseThrow(() -> new RuntimeException("Onboarding process not found"));
         onboarding.setHardwareAcquired(status);
         onboardingRepository.save(onboarding);
+    }
+
+    @Transactional
+    public void deleteOnboarding(Long id) {
+        onboardingRepository.deleteById(id);
     }
 }

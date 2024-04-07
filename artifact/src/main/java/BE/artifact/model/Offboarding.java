@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Onboarding {
+public class Offboarding {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,6 +15,6 @@ public class Onboarding {
     @JsonBackReference
     private User user;
 
-    private boolean badgeObtained;
-    private boolean hardwareAcquired;
+    private boolean accountDeactivated;
+    private boolean hardwareReturned;
 }
