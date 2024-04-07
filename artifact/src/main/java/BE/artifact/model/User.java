@@ -40,6 +40,14 @@ public class User implements UserDetails {
     @JsonManagedReference
     private List<Absence> absences;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
+    private Onboarding onboarding;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
+    private Offboarding offboarding;
+
     @Override
     public String getUsername() {
         return email;
