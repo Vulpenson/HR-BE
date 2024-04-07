@@ -8,4 +8,6 @@ public interface AuthenticationService {
     JwtAuthenticationResponse signup(SignUpRequest request);
 
     JwtAuthenticationResponse signin(SignInRequest request);
+
+    JwtAuthenticationResponse deleteUser(Long id);
 }

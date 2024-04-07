@@ -40,4 +40,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var jwt = jwtService.generateToken(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
+
+    @Override
+    public JwtAuthenticationResponse deleteUser(Long id) {
+        userRepository.deleteById(id);
+        return JwtAuthenticationResponse.builder().token("User deleted").build();
+    }
 }
