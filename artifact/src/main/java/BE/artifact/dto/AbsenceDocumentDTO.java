@@ -13,5 +13,4 @@ public class AbsenceDocumentDTO {
         this.name = name;
         this.mimeType = mimeType;
     }
-
 }

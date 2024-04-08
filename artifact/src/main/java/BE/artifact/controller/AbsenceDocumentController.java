@@ -32,5 +32,30 @@ public class AbsenceDocumentController {
                 .body(document.getData());
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteDocument(@PathVariable Long id) {
+        documentService.deleteDocument(id);
+        return ResponseEntity.ok("Document deleted");
+    }
 
+    @DeleteMapping("/absence/{absenceId}")
+    public ResponseEntity<?> deleteDocumentsForAbsence(@PathVariable Long absenceId) {
+        documentService.deleteDocumentsByAbsenceId(absenceId);
+        return ResponseEntity.ok("Documents deleted");
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllDocuments() {
+        return ResponseEntity.ok(documentService.getAllDocuments());
+    }
+
+    @GetMapping("/absence/{absenceId}")
+    public ResponseEntity<?> getDocumentsForAbsence(@PathVariable Long absenceId) {
+        return ResponseEntity.ok(documentService.getDocumentsByAbsenceId(absenceId));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateDocument(@PathVariable Long id, @RequestBody AbsenceDocument document) {
+        return ResponseEntity.ok(documentService.updateDocument(id, document));
+    }
 }

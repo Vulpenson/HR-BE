@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface AbsenceDocumentRepository extends JpaRepository<AbsenceDocument, Long> {
     List<AbsenceDocument> findByAbsenceId(Long absenceId);
+    void deleteByAbsenceId(Long absenceId);
 }
