@@ -94,4 +94,18 @@ public class AbsenceService {
         Absence updatedAbsence = absenceRepository.save(absence);
         return ResponseEntity.ok(updatedAbsence);
     }
+
+    // Method to get an absence by ID
+    public ResponseEntity<Absence> getAbsenceById(Long id) {
+        Absence absence = absenceRepository.findById(id).orElse(null);
+        if (absence == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(absence);
+    }
+
+    // Method to get all absences for a specific user
+    public List<Absence> getAbsencesByUserEmail(String email) {
+        return absenceRepository.findByUserEmail(email);
+    }
 }

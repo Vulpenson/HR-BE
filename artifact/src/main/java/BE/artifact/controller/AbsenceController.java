@@ -56,4 +56,13 @@ public class AbsenceController {
         return absenceService.updateAbsence(id, absenceDTO);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Absence> getAbsenceById(@PathVariable Long id) {
+        return absenceService.getAbsenceById(id);
+    }
+
+    @GetMapping("/user/{email}")
+    public List<Absence> getAbsencesByUserEmail(@PathVariable String email) {
+        return absenceService.getAbsencesByUserEmail(email);
+    }
 }

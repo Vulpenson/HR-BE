@@ -1,6 +1,7 @@
 package BE.artifact.model;
 
 import BE.artifact.model.absence.Absence;
+import BE.artifact.model.recruiting.Recommendation;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -47,6 +48,13 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonManagedReference
     private Offboarding offboarding;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Recommendation> recommendations;
+
+    // User's CV
+    private byte[] cvContent;
 
     @Override
     public String getUsername() {

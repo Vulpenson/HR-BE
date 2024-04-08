@@ -43,7 +43,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public JwtAuthenticationResponse deleteUser(Long id) {
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id.toString()).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        userRepository.deleteByEmail(user.getEmail());
         return JwtAuthenticationResponse.builder().token("User deleted").build();
     }
 }

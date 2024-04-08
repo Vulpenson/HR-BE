@@ -31,6 +31,7 @@ public class AbsenceDocumentService {
         document.setName(fileName);
         document.setMimeType(mimeType);
         document.setData(data);
+        document.setAbsence(absence);
 
         return documentRepository.save(document);
     }
@@ -42,5 +43,28 @@ public class AbsenceDocumentService {
 
     public List<AbsenceDocument> getDocumentsByAbsenceId(Long absenceId) {
         return documentRepository.findByAbsenceId(absenceId);
+    }
+
+    public void deleteDocument(Long id) {
+        documentRepository.deleteById(id);
+    }
+
+    public void deleteDocumentsByAbsenceId(Long absenceId) {
+        documentRepository.deleteByAbsenceId(absenceId);
+    }
+
+    public List<AbsenceDocument> getAllDocuments() {
+        return documentRepository.findAll();
+    }
+
+    public AbsenceDocument updateDocument(Long id, AbsenceDocument document) {
+        AbsenceDocument existingDocument = documentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Document not found with id " + id));
+
+        existingDocument.setName(document.getName());
+        existingDocument.setMimeType(document.getMimeType());
+        existingDocument.setData(document.getData());
+
+        return documentRepository.save(existingDocument);
     }
 }
