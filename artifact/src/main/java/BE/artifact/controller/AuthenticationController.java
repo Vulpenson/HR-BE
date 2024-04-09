@@ -37,15 +37,32 @@ public class AuthenticationController {
 
     @PostMapping("/signin")
     public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SignInRequest request) {
-        logger.info("User signed in successfully");
-        return ResponseEntity.ok(authenticationService.signin(request));
+        try {
+            return ResponseEntity.ok(authenticationService.signin(request));
+        } catch (Exception e) {
+            logger.info("Invalid credentials");
+            throw new RuntimeException(e);
+        }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete-id/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUserById(@PathVariable Long id) {
         try {
-            authenticationService.deleteUser(id);
+            authenticationService.deleteUserById(id);
+            logger.info("User deleted successfully");
+        } catch (Exception e) {
+            logger.info("User not found");
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.ok("User deleted");
+    }
+
+    @DeleteMapping("/delete/{email}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteUserByEmail(@PathVariable String email) {
+        try {
+            authenticationService.deleteUserByEmail(email);
             logger.info("User deleted successfully");
         } catch (Exception e) {
             logger.info("User not found");

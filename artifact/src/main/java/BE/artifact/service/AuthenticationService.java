@@ -9,5 +9,7 @@ public interface AuthenticationService {
 
     JwtAuthenticationResponse signin(SignInRequest request);
 
-    JwtAuthenticationResponse deleteUser(Long id);
+    JwtAuthenticationResponse deleteUserById(Long id);
+
+    JwtAuthenticationResponse deleteUserByEmail(String email);
 }
