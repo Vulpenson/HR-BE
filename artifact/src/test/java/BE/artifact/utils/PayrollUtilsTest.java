@@ -15,9 +15,9 @@ public class PayrollUtilsTest {
         Random random = new Random();
         payroll.setId(id);
         payroll.setPayDate(subtractMonths(Date.from(LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC)), random.nextInt(30)));
-        payroll.setGrossPay(1000.0);
-        payroll.setDeductions(200.0);
-        payroll.setNetPay(800.0);
+//        payroll.setGrossPay(1000.0);
+//        payroll.setDeductions(200.0);
+//        payroll.setNetPay(800.0);
 
         return payroll;
     }

@@ -13,10 +13,7 @@ public class Payroll {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Date payDate;
-    private Double grossPay;
-    private Double deductions;
     private Double netPay;
-
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

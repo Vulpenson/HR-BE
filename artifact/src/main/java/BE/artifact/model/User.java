@@ -58,6 +58,8 @@ public class User implements UserDetails {
     @JsonManagedReference
     private List<Payroll> payrolls;
 
+    private Double grossPay;
+
     // User's CV
     private byte[] cvContent;
 

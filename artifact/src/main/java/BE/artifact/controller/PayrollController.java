@@ -22,7 +22,12 @@ public class PayrollController {
         return ResponseEntity.ok(payrollService.getYourLastPayroll());
     }
 
-    @PostMapping("/delete/{id}")
+    @GetMapping("/user/all")
+    public ResponseEntity<?> getYourPayrolls() {
+        return ResponseEntity.ok(payrollService.getYourPayrolls());
+    }
+
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deletePayroll(@PathVariable Long id) {
         payrollService.deletePayroll(id);
         return ResponseEntity.ok("Payroll deleted");
@@ -52,5 +57,25 @@ public class PayrollController {
     @PostMapping("/update/{id}")
     public ResponseEntity<?> updatePayroll(@PathVariable Long id, @RequestBody Payroll payroll) {
         return ResponseEntity.ok(payrollService.updatePayroll(id, payroll));
+    }
+
+    @PostMapping("/pay/all")
+    public ResponseEntity<?> payAll() {
+        try {
+            payrollService.payAll();
+            return ResponseEntity.ok("All employees paid");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/grosspay/{email}/{amount}")
+    public ResponseEntity<?> setGrossPay(@PathVariable String email, @PathVariable Double amount) {
+        try {
+            payrollService.setGrossPay(email, amount);
+            return ResponseEntity.ok("Gross pay set");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

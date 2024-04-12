@@ -1,14 +1,21 @@
 package BE.artifact.service;
 
 import BE.artifact.model.Payroll;
+import BE.artifact.model.User;
+import BE.artifact.model.absence.Absence;
+import BE.artifact.model.absence.AbsenceType;
 import BE.artifact.repository.PayrollRepository;
 import BE.artifact.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -40,6 +47,12 @@ public class PayrollService {
                 .orElse(null);
     }
 
+    public List<Payroll> getYourPayrolls() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentEmail = authentication.getName();
+        return payrollRepository.findByUserEmail(currentEmail);
+    }
+
     public Payroll savePayroll(String Email, Payroll payroll) {
         payroll.setUser(userRepository.findByEmail(Email)
                 .orElseThrow(() -> new RuntimeException("User not found")));
@@ -59,5 +72,35 @@ public class PayrollService {
                 .orElseThrow(() -> new RuntimeException("Payroll not found with id " + id));
         existingPayroll.setPayDate(payroll.getPayDate());
         return payrollRepository.save(existingPayroll);
+    }
+
+    public void payAll() {
+        userRepository.findAll().forEach(user -> {
+            Payroll payroll = new Payroll();
+            payroll.setUser(user);
+            payroll.setPayDate(Date.from(LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC)));
+            payroll.setNetPay(calculateSalary(user));
+            payrollRepository.save(payroll);
+        });
+    }
+
+    public Double calculateSalary(User user) {
+        Double salary = user.getGrossPay();
+        Double CAS = 0.2;
+        Double CASS = 0.15;
+        List<Absence> absences = user.getAbsences();
+        for (Absence absence : absences) {
+            if (absence.getType() == AbsenceType.UNPAID_LEAVE) {
+                salary -= (absence.getEndDate().getDayOfYear() - absence.getStartDate().getDayOfYear()) * salary / 20;
+            }
+        }
+        return salary - salary * (CAS + CASS);
+    }
+
+    public void setGrossPay(String email, Double amount) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setGrossPay(amount);
+        userRepository.save(user);
     }
 }

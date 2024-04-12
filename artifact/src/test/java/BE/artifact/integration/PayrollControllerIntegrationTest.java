@@ -113,6 +113,31 @@ public class PayrollControllerIntegrationTest {
 //                .andExpect(jsonPath("$.id").exists()); // Assuming your Payroll object has an 'id' field
     }
 
+    @Test
+    public void whenGetPayrollsByEmail_thenReturns200() throws Exception {
+        mockMvc.perform(get("/api/user/test@gmail.com")
+                        .header("Authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray());
+    }
 
+    @Test
+    @Disabled("This test will fail if there are no payrolls to delete")
+    public void whenDeletePayrollsByEmail_thenReturns200() throws Exception {
+        mockMvc.perform(post("/delete-all/test@gmail.com")
+                        .header("Authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Payrolls deleted"));
+    }
 
+    @Test
+    public void whenPayAll_thenReturns200() throws Exception {
+        mockMvc.perform(post("/api/payroll/pay/all")
+                        .header("Authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("All employees paid"));
+    }
 }
