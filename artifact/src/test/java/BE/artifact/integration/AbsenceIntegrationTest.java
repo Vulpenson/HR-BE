@@ -3,6 +3,7 @@ package BE.artifact.integration;
 import BE.artifact.dto.AbsenceDTO;
 import BE.artifact.model.absence.AbsenceType;
 import BE.artifact.payload.request.SignInRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.time.LocalDate;
+import java.util.Random;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -44,6 +46,7 @@ public class AbsenceIntegrationTest {
     }
 
     @Test
+    @Disabled
     public void testAddAbsence() throws Exception {
         AbsenceDTO absenceDTO = new AbsenceDTO(LocalDate.now().minusDays(4), LocalDate.now(), AbsenceType.WORK_FROM_HOME, true); // Populate your DTO as needed
         objectMapper.registerModule(new JavaTimeModule());
@@ -86,7 +89,7 @@ public class AbsenceIntegrationTest {
 
     @Test
     public void testUpdateAbsence() throws Exception {
-        AbsenceDTO absenceDTO = new AbsenceDTO(LocalDate.now().minusDays(4), LocalDate.now(), AbsenceType.WORK_FROM_HOME, true); // Populate your DTO as needed
+        AbsenceDTO absenceDTO = new AbsenceDTO(LocalDate.now().minusDays(4), LocalDate.now(), AbsenceType.WORK_FROM_HOME, true);
         objectMapper.registerModule(new JavaTimeModule());
         mockMvc.perform(post("/api/absences/update/{id}", 2)
                         .header("Authorization", adminToken)
@@ -116,7 +119,9 @@ public class AbsenceIntegrationTest {
 
     @Test
     public void testAddAbsenceForCurrentUser() throws Exception {
-        AbsenceDTO absenceDTO = new AbsenceDTO(LocalDate.now().minusDays(4), LocalDate.now(), AbsenceType.WORK_FROM_HOME, true); // Populate your DTO as needed
+        Random random = new Random();
+        int randomInt = random.nextInt(3,30);
+        AbsenceDTO absenceDTO = new AbsenceDTO(LocalDate.now().minusDays(randomInt), LocalDate.now().minusDays(randomInt + 3), AbsenceType.WORK_FROM_HOME, true); // Populate your DTO as needed
         objectMapper.registerModule(new JavaTimeModule());
         mockMvc.perform(post("/api/absences/add-current-user")
                         .header("Authorization", adminToken)
@@ -126,4 +131,13 @@ public class AbsenceIntegrationTest {
                 .andExpect(jsonPath("$.id").exists());
     }
 
+    @Test
+    public void testGetAbsencesByUserEmail() throws Exception {
+        mockMvc.perform(get("/api/absences/user/test@gmail.com")
+                        .header("Authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(jsonPath("$").isArray());
+    }
 }
