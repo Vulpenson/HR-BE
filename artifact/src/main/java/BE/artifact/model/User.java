@@ -60,6 +60,10 @@ public class User implements UserDetails {
 
     private Double grossPay;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
+    private PersonalDetails personalDetails;
+
     // User's CV
     private byte[] cvContent;
 
