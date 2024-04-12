@@ -1,12 +1,9 @@
 package BE.artifact.integration;
 
-import BE.artifact.model.Payroll;
 import BE.artifact.payload.request.SignInRequest;
 import BE.artifact.service.PayrollService;
 import BE.artifact.utils.PayrollUtilsTest;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -46,7 +43,6 @@ public class PayrollControllerIntegrationTest {
                         .content(new ObjectMapper().writeValueAsString(signInRequest)))
                 .andReturn().getResponse().getContentAsString();
         adminToken = "Bearer " + new ObjectMapper().readTree(adminToken).get("token").textValue();
-
     }
 
     @Test

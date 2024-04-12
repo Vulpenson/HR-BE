@@ -1,5 +1,6 @@
 package BE.artifact.model.absence;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -18,6 +19,7 @@ public class AbsenceDocument {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "absence_id")
+    @JsonBackReference
     private Absence absence;
 
     // Constructors, getters, and setters

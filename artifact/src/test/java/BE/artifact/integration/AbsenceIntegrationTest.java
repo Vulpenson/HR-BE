@@ -31,7 +31,6 @@ public class AbsenceIntegrationTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-
     private String adminToken;
 
     @BeforeEach
