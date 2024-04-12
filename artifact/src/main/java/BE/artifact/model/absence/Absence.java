@@ -2,6 +2,7 @@ package BE.artifact.model.absence;
 
 import BE.artifact.model.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class Absence {
     private AbsenceType type; // e.g., VACATION, SICK_LEAVE, etc.
 
     @OneToMany(mappedBy = "absence", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
     private List<AbsenceDocument> documents = new ArrayList<>();
 
     private boolean approved;
