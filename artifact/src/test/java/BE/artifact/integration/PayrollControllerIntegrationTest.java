@@ -140,4 +140,14 @@ public class PayrollControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("All employees paid"));
     }
+
+    @Test
+    public void whenGetYourPayrolls_thenReturns200() throws Exception {
+        mockMvc.perform(get("/api/payroll/user/all")
+                        .header("Authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(jsonPath("$").isArray());
+    }
 }
