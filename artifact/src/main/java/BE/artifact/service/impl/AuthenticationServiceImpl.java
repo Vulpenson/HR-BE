@@ -8,6 +8,7 @@ import BE.artifact.payload.response.JwtAuthenticationResponse;
 import BE.artifact.repository.UserRepository;
 import BE.artifact.service.AuthenticationService;
 import BE.artifact.service.JwtService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,8 +43,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public JwtAuthenticationResponse deleteUser(Long id) {
+    public JwtAuthenticationResponse deleteUserById(Long id) {
         User user = userRepository.findById(id.toString()).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        userRepository.deleteByEmail(user.getEmail());
+        return JwtAuthenticationResponse.builder().token("User deleted").build();
+    }
+
+    @Override
+    @Transactional
+    public JwtAuthenticationResponse deleteUserByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User not found"));
         userRepository.deleteByEmail(user.getEmail());
         return JwtAuthenticationResponse.builder().token("User deleted").build();
     }
