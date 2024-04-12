@@ -7,9 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import javax.print.DocFlavor;
-import java.time.LocalDate;
-
 @Entity
 @Data
 @RequiredArgsConstructor

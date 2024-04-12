@@ -2,6 +2,7 @@ package BE.artifact.model;
 
 import BE.artifact.model.absence.Absence;
 import BE.artifact.model.recruiting.Recommendation;
+import BE.artifact.security.AttributeEncryptor;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,10 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Convert(converter = AttributeEncryptor.class)
     private String firstName;
+    @Convert(converter = AttributeEncryptor.class)
     private String lastName;
     @Column(unique = true)
     private String email;
