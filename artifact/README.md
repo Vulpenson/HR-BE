@@ -7,5 +7,5 @@ Se va implementa o aplicatie web pentru HR care va include urmatoarele functiona
 - Onboarding and offboarding :heavy_check_mark:                 
 - Payroll and compensation management :heavy_check_mark:
 - Time tracking :heavy_check_mark:                          
-- Employee engagement
+- Employee engagement :heavy_check_mark:
 - Performance management
