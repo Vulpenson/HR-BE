@@ -6,8 +6,6 @@ import BE.artifact.model.UserRole;
 import BE.artifact.repository.UserRepository;
 import BE.artifact.service.PayrollService;
 import BE.artifact.service.impl.JwtServiceImpl;
-import BE.artifact.utils.PayrollUtilsTest;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +13,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -53,9 +49,9 @@ public class PayrollControllerTest {
     @BeforeEach
     public void setup() {
 
-        for (long i = 0; i < 7; i++) {
-            payrolls.add(PayrollUtilsTest.createPayroll(i));
-        }
+//        for (long i = 0; i < 7; i++) {
+//            payrolls.add(PayrollUtilsTest.createPayroll(i));
+//        }
 
         User user = new User();
         user.setEmail("test@gmail.com");
