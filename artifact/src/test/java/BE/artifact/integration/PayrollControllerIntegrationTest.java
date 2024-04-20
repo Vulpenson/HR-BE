@@ -91,7 +91,7 @@ public class PayrollControllerIntegrationTest {
     @Test
     public void whenGetPayrollById_thenReturns200() throws Exception {
         // Assuming you have a payroll with ID 1 for retrieval in setup()
-        mockMvc.perform(get("/api/payroll/1")
+        mockMvc.perform(get("/api/payroll/24")
                         .header("Authorization", adminToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

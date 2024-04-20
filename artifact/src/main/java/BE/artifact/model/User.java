@@ -27,9 +27,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Convert(converter = AttributeEncryptor.class)
+//    @Convert(converter = AttributeEncryptor.class)
     private String firstName;
-    @Convert(converter = AttributeEncryptor.class)
+//    @Convert(converter = AttributeEncryptor.class)
     private String lastName;
     @Column(unique = true)
     private String email;

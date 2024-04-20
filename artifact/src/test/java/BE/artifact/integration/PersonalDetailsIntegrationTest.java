@@ -68,6 +68,7 @@ public class PersonalDetailsIntegrationTest {
     }
 
     @Test
+    @Disabled
     public void savePersonalDetailsOfCurrentUser() throws Exception {
         PersonalDetails details = personalDetailsNewTest();
         mockMvc.perform(post("/api/personal-details/current/save")

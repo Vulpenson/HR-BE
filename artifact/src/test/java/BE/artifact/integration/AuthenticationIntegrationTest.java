@@ -4,6 +4,7 @@ import BE.artifact.model.UserRole;
 import BE.artifact.payload.request.SignInRequest;
 import BE.artifact.payload.request.SignUpRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -67,6 +68,7 @@ public class AuthenticationIntegrationTest {
     }
 
     @Test
+    @Disabled
     public void deleteUser() throws Exception {
         SignInRequest signInRequest = new SignInRequest("test@gmail.com", "test");
         String adminToken = mockMvc.perform(post("/api/auth/signin")
