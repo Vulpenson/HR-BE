@@ -1,5 +1,6 @@
 package BE.artifact.dto;
 
+import BE.artifact.model.Payroll;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ public class PayrollDTO {
     private Date payDate;
     private Double netPay;
 
-    public PayrollDTO from(Date payDate, Double netPay) {
-        return new PayrollDTO(payDate, netPay);
+    public static PayrollDTO from(Payroll payroll) {
+        return new PayrollDTO(payroll.getPayDate(), payroll.getNetPay());
     }
 }

@@ -8,6 +8,7 @@ import BE.artifact.model.absence.Absence;
 import BE.artifact.model.recruiting.Recommendation;
 import lombok.Data;
 
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -17,14 +18,22 @@ public class UserDTO {
     private String email;
     private String role;
     private List<AbsenceDTO> absences;
-    private Onboarding onboarding;
-    private Offboarding offboarding;
+    private OnboardingDTO onboarding;
+    private OffboardingDTO offboarding;
     private List<RecommendationDTO> recommendations;
     private List<PayrollDTO> payrolls;
 
     public static UserDTO from(User user) {
         UserDTO userDTO = new UserDTO();
-
-        return null;
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setRole(user.getRole().name());
+        userDTO.setAbsences(user.getAbsences().stream().map(AbsenceDTO::from).toList());
+        userDTO.setOnboarding(OnboardingDTO.from(user.getOnboarding()));
+        userDTO.setOffboarding(OffboardingDTO.from(user.getOffboarding()));
+        userDTO.setRecommendations(user.getRecommendations().stream().map(RecommendationDTO::from).toList());
+        userDTO.setPayrolls(user.getPayrolls().stream().map(PayrollDTO::from).toList());
+        return userDTO;
     }
 }

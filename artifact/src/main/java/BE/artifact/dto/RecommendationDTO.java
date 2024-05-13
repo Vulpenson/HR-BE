@@ -1,5 +1,6 @@
 package BE.artifact.dto;
 
+import BE.artifact.model.recruiting.Recommendation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ import lombok.Data;
 public class RecommendationDTO {
     private String questionnaireResponse;
 
-    public RecommendationDTO from(String questionnaireResponse) {
-        return new RecommendationDTO(questionnaireResponse);
+    public static RecommendationDTO from(Recommendation recommendation) {
+        return new RecommendationDTO(recommendation.getQuestionnaireResponse());
     }
 }

@@ -23,7 +23,7 @@ public class PersonalDetailsDTO {
     private String contractNumber;
     private String contractStartDate;
 
-    public PersonalDetailsDTO from(String CNP, String phoneNumber, String address, String city, String country,
+    public static PersonalDetailsDTO from(String CNP, String phoneNumber, String address, String city, String country,
                                    String postalCode, String bank, String bankAccount, String identityCard,
                                    String identityCardSeries, String identityCardNumber, String registeredBy,
                                    String registrationDate, String companyPosition, String contractNumber,

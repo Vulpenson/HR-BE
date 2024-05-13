@@ -10,7 +10,7 @@ public class OnboardingDTO {
     private boolean badgeObtained;
     private boolean hardwareAcquired;
 
-    public OnboardingDTO from(Onboarding onboarding) {
+    public static OnboardingDTO from(Onboarding onboarding) {
         return new OnboardingDTO(onboarding.isBadgeObtained(), onboarding.isHardwareAcquired());
     }
 }
