@@ -1,7 +1,12 @@
 package BE.artifact.controller;
 
+import BE.artifact.dto.PayrollDTO;
 import BE.artifact.model.Payroll;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import BE.artifact.service.PayrollService;
@@ -23,8 +28,16 @@ public class PayrollController {
     }
 
     @GetMapping("/user/all")
-    public ResponseEntity<?> getYourPayrolls() {
-        return ResponseEntity.ok(payrollService.getYourPayrolls());
+    public ResponseEntity<?> getYourPayrolls(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "payDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String dir
+    ) {
+        Sort.Direction sortDirection = Sort.Direction.fromString(dir);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+        Page<PayrollDTO> payrollPage = payrollService.getYourPayrolls(pageable);
+        return ResponseEntity.ok(payrollPage);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -45,8 +58,16 @@ public class PayrollController {
     }
 
     @GetMapping("/user/{email}")
-    public ResponseEntity<?> getPayrollsByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(payrollService.getPayrollsByEmail(email));
+    public ResponseEntity<?> getPayrollsByEmail(
+            @PathVariable String email,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "payDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String dir
+            ) {
+        Sort.Direction sortDirection = Sort.Direction.fromString(dir);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+        return ResponseEntity.ok(payrollService.getPayrollsByEmail(email, pageable));
     }
 
     @GetMapping("/{id}")

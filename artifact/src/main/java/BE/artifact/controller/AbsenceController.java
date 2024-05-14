@@ -65,4 +65,9 @@ public class AbsenceController {
     public List<Absence> getAbsencesByUserEmail(@PathVariable String email) {
         return absenceService.getAbsencesByUserEmail(email);
     }
+
+    @GetMapping("/last")
+    public ResponseEntity<AbsenceDTO> getLastAbsence() {
+        return absenceService.getLastAbsence();
+    }
 }

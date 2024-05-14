@@ -1,5 +1,6 @@
 package BE.artifact.service.impl;
 
+import BE.artifact.dto.UserDTO;
 import BE.artifact.repository.UserRepository;
 import BE.artifact.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,12 @@ public class UserServiceImpl implements UserService {
                         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             }
         };
+    }
+
+    @Override
+    public UserDTO getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(UserDTO::from)
+                .orElse(null);
     }
 }
