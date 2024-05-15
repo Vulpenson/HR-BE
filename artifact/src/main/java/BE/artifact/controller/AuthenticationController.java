@@ -1,9 +1,11 @@
 package BE.artifact.controller;
 
+import BE.artifact.dto.UserDTO;
 import BE.artifact.payload.request.SignInRequest;
 import BE.artifact.payload.request.SignUpRequest;
 import BE.artifact.payload.response.JwtAuthenticationResponse;
 import BE.artifact.service.AuthenticationService;
+import BE.artifact.service.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.logging.Logger;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
+    private final UserService userService;
 
     Logger logger = Logger.getLogger(AuthenticationController.class.getName());
 
@@ -44,6 +47,11 @@ public class AuthenticationController {
             logger.info("Invalid credentials");
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("/user/{email}")
+    public UserDTO getUserByEmail(@PathVariable String email) {
+        return userService.getUserByEmail(email);
     }
 
     @DeleteMapping("/delete-id/{id}")

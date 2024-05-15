@@ -1,11 +1,6 @@
 package BE.artifact.dto;
 
-import BE.artifact.model.Offboarding;
-import BE.artifact.model.Onboarding;
-import BE.artifact.model.Payroll;
 import BE.artifact.model.User;
-import BE.artifact.model.absence.Absence;
-import BE.artifact.model.recruiting.Recommendation;
 import lombok.Data;
 
 import java.util.Collections;
