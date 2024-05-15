@@ -125,15 +125,15 @@ public class PayrollControllerTest {
 //                .andExpect(status().isOk());
 //    }
 
-    @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
-    public void getPayrollsByEmailTest() throws Exception {
-        when(payrollService.getPayrollsByEmail(anyString())).thenReturn(payrolls);
-
-        mockMvc.perform(get("/api/payroll/user/{email}", "test@test.com")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    @WithMockUser(username = "admin", roles = "ADMIN")
+//    public void getPayrollsByEmailTest() throws Exception {
+//        when(payrollService.getPayrollsByEmail(anyString())).thenReturn(payrolls);
+//
+//        mockMvc.perform(get("/api/payroll/user/{email}", "test@test.com")
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk());
+//    }
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")

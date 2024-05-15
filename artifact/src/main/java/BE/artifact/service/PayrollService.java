@@ -1,5 +1,6 @@
 package BE.artifact.service;
 
+import BE.artifact.dto.PayrollDTO;
 import BE.artifact.model.Payroll;
 import BE.artifact.model.User;
 import BE.artifact.model.absence.Absence;
@@ -7,6 +8,8 @@ import BE.artifact.model.absence.AbsenceType;
 import BE.artifact.repository.PayrollRepository;
 import BE.artifact.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,8 +27,9 @@ public class PayrollService {
     private final PayrollRepository payrollRepository;
     private final UserRepository userRepository;
 
-    public List<Payroll> getPayrollsByEmail(String email) {
-        return payrollRepository.findByUserEmail(email);
+    public Page<PayrollDTO> getPayrollsByEmail(String email, Pageable pageable) {
+        Page<Payroll> payrollPage = payrollRepository.findByUserEmail(email, pageable);
+        return payrollPage.map(PayrollDTO::from);
     }
 
     public Payroll getPayrollById(Long id) {
@@ -40,17 +44,19 @@ public class PayrollService {
     public Payroll getYourLastPayroll() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentEmail = authentication.getName();
-        List<Payroll> payrolls = payrollRepository.findByUserEmail(currentEmail);
+        Pageable pageable = Pageable.unpaged();
+        List<Payroll> payrolls = payrollRepository.findByUserEmail(currentEmail, pageable).toList();
 
         return payrolls.stream()
                 .max(Comparator.comparing(Payroll::getPayDate))
                 .orElse(null);
     }
 
-    public List<Payroll> getYourPayrolls() {
+    public Page<PayrollDTO> getYourPayrolls(Pageable pageable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentEmail = authentication.getName();
-        return payrollRepository.findByUserEmail(currentEmail);
+        Page<Payroll> payrollPage = payrollRepository.findByUserEmail(currentEmail, pageable);
+        return payrollPage.map(PayrollDTO::from);
     }
 
     public Payroll savePayroll(String Email, Payroll payroll) {
