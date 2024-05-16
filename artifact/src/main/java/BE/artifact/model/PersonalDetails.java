@@ -67,4 +67,7 @@ public class PersonalDetails {
 
     @Convert(converter = AttributeEncryptor.class)
     private String contractStartDate;
+
+    @Convert(converter = AttributeEncryptor.class)
+    private String department;
 }

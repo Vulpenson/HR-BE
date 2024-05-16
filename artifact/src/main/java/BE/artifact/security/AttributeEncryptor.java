@@ -37,10 +37,14 @@ public class AttributeEncryptor implements AttributeConverter<String, String> {
     @Override
     public String convertToDatabaseColumn(String attribute) {
         try {
+            if (attribute == null) {
+                return null;
+            }
             cipher.init(Cipher.ENCRYPT_MODE, key);
             return Base64.getEncoder().encodeToString(cipher.doFinal(attribute.getBytes()));
         } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
-            throw new IllegalStateException(e);
+            logger.severe("Error while encrypting attribute: " + e.getMessage());
+            throw new IllegalStateException("Error while encrypting attribute: " + e.getMessage());
         }
     }
 
@@ -50,7 +54,8 @@ public class AttributeEncryptor implements AttributeConverter<String, String> {
             cipher.init(Cipher.DECRYPT_MODE, key);
             return new String(cipher.doFinal(Base64.getDecoder().decode(dbData)));
         } catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
-            throw new IllegalStateException(e);
+            logger.severe("Error while decrypting attribute: " + e.getMessage());
+            throw new IllegalStateException("Error while decrypting attribute: " + e.getMessage());
         }
     }
 }

@@ -1,5 +1,6 @@
 package BE.artifact.controller;
 
+import BE.artifact.dto.PersonalDetailsDTO;
 import BE.artifact.model.PersonalDetails;
 import BE.artifact.service.PersonalDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +25,13 @@ public class PersonalDetailsController {
     }
 
     @PostMapping("/current/update")
-    public ResponseEntity<?> updatePersonalDetailsOfCurrentUser(@RequestBody PersonalDetails personalDetails) {
+    public ResponseEntity<?> updatePersonalDetailsOfCurrentUser(@RequestBody PersonalDetailsDTO personalDetails) {
         personalDetailsService.updatePersonalDetailsOfCurrentUser(personalDetails);
         return ResponseEntity.ok("Personal details updated");
     }
 
     @PostMapping("/current/save")
-    public ResponseEntity<?> savePersonalDetailsOfCurrentUser(@RequestBody PersonalDetails personalDetails) {
+    public ResponseEntity<?> savePersonalDetailsOfCurrentUser(@RequestBody PersonalDetailsDTO personalDetails) {
         personalDetailsService.savePersonalDetailsOfCurrentUser(personalDetails);
         return ResponseEntity.ok("Personal details saved");
     }
