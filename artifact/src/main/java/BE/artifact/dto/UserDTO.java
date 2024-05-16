@@ -17,6 +17,8 @@ public class UserDTO {
     private OffboardingDTO offboarding;
     private List<RecommendationDTO> recommendations;
     private List<PayrollDTO> payrolls;
+    private PersonalDetailsDTO personalDetails;
+    private Double grossPay;
 
     public static UserDTO from(User user) {
         UserDTO userDTO = new UserDTO();
@@ -46,6 +48,12 @@ public class UserDTO {
         } else {
             userDTO.setPayrolls(user.getPayrolls().stream().map(PayrollDTO::from).toList());
         }
+        if (user.getPersonalDetails() == null) {
+            userDTO.setPersonalDetails(null);
+        } else {
+            userDTO.setPersonalDetails(PersonalDetailsDTO.from(user.getPersonalDetails()));
+        }
+        userDTO.setGrossPay(user.getGrossPay());
         return userDTO;
     }
 }

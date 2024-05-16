@@ -8,14 +8,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import BE.artifact.service.PayrollService;
+
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/payroll")
 @RequiredArgsConstructor
 public class PayrollController {
     private final PayrollService payrollService;
+
+    Logger logger = Logger.getLogger(PayrollController.class.getName());
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllPayrolls() {
@@ -53,8 +58,13 @@ public class PayrollController {
     }
 
     @PostMapping("/save/{email}")
-    public ResponseEntity<?> savePayroll(@PathVariable String email, @RequestBody Payroll payroll) {
-        return ResponseEntity.ok(payrollService.savePayroll(email, payroll));
+    public ResponseEntity<?> savePayroll(@PathVariable String email, @RequestBody PayrollDTO payroll) {
+        try {
+            payrollService.savePayroll(email, payroll);
+            return ResponseEntity.ok("Payroll saved");
+        } catch (Exception e) {
+            throw new RuntimeException("Error saving payroll", e);
+        }
     }
 
     @GetMapping("/user/{email}")
@@ -65,9 +75,14 @@ public class PayrollController {
             @RequestParam(defaultValue = "payDate") String sortBy,
             @RequestParam(defaultValue = "desc") String dir
             ) {
-        Sort.Direction sortDirection = Sort.Direction.fromString(dir);
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
-        return ResponseEntity.ok(payrollService.getPayrollsByEmail(email, pageable));
+        try {
+            Sort.Direction sortDirection = Sort.Direction.fromString(dir);
+            Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+            return ResponseEntity.ok(payrollService.getPayrollsByEmail(email, pageable));
+        } catch (Exception e) {
+            logger = Logger.getLogger(PayrollController.class.getName());
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping("/{id}")
@@ -91,6 +106,7 @@ public class PayrollController {
     }
 
     @PostMapping("/grosspay/{email}/{amount}")
+    @PreAuthorize("hasRole('ROLE_HR') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> setGrossPay(@PathVariable String email, @PathVariable Double amount) {
         try {
             payrollService.setGrossPay(email, amount);

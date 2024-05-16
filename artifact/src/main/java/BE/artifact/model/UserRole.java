@@ -5,4 +5,3 @@ public enum UserRole {
     ROLE_HR,
     ROLE_ADMIN,
 }
-

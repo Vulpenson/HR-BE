@@ -4,10 +4,14 @@ import BE.artifact.dto.UserDTO;
 import BE.artifact.repository.UserRepository;
 import BE.artifact.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,5 +33,17 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email)
                 .map(UserDTO::from)
                 .orElse(null);
+    }
+
+    @Override
+    public Page<UserDTO> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(UserDTO::from);
+    }
+
+    @Transactional
+    @Override
+    public void deleteUserByEmail(String email) {
+        userRepository.deleteByEmail(email);
     }
 }

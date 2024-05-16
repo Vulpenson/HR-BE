@@ -23,28 +23,8 @@ public class PersonalDetailsService {
         personalDetailsRepository.deleteById(id);
     }
 
-    public PersonalDetails updatePersonalDetails(Integer id, PersonalDetails personalDetails) {
-        PersonalDetails personalDetailsToUpdate = personalDetailsRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Personal details not found with id " + id));
-
-        personalDetailsToUpdate.setCNP(personalDetails.getCNP());
-        personalDetailsToUpdate.setPhoneNumber(personalDetails.getPhoneNumber());
-        personalDetailsToUpdate.setAddress(personalDetails.getAddress());
-        personalDetailsToUpdate.setCity(personalDetails.getCity());
-        personalDetailsToUpdate.setCountry(personalDetails.getCountry());
-        personalDetailsToUpdate.setPostalCode(personalDetails.getPostalCode());
-        personalDetailsToUpdate.setBank(personalDetails.getBank());
-        personalDetailsToUpdate.setBankAccount(personalDetails.getBankAccount());
-        personalDetailsToUpdate.setIdentityCard(personalDetails.getIdentityCard());
-        personalDetailsToUpdate.setIdentityCardSeries(personalDetails.getIdentityCardSeries());
-        personalDetailsToUpdate.setIdentityCardNumber(personalDetails.getIdentityCardNumber());
-        personalDetailsToUpdate.setRegisteredBy(personalDetails.getRegisteredBy());
-        personalDetailsToUpdate.setRegistrationDate(personalDetails.getRegistrationDate());
-        personalDetailsToUpdate.setCompanyPosition(personalDetails.getCompanyPosition());
-        personalDetailsToUpdate.setContractNumber(personalDetails.getContractNumber());
-        personalDetailsToUpdate.setContractStartDate(personalDetails.getContractStartDate());
-
-        return personalDetailsRepository.save(personalDetailsToUpdate);
+    public void updatePersonalDetails(String email, PersonalDetailsDTO personalDetailsDTO) {
+        updateFields(email, personalDetailsDTO);
     }
 
     public PersonalDetails getPersonalDetailsByEmail(String email) {
@@ -76,7 +56,39 @@ public class PersonalDetailsService {
     public void updatePersonalDetailsOfCurrentUser(PersonalDetailsDTO personalDetailsDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentEmail = authentication.getName();
-        PersonalDetails personalDetailsToUpdate = personalDetailsRepository.findByUserEmail(currentEmail);
+        updateFields(currentEmail, personalDetailsDTO);
+    }
+
+    public PersonalDetails from(PersonalDetailsDTO personalDetailsDTO) {
+        PersonalDetails personalDetails = new PersonalDetails();
+        personalDetails.setCNP(personalDetailsDTO.getCNP());
+        personalDetails.setPhoneNumber(personalDetailsDTO.getPhoneNumber());
+        personalDetails.setAddress(personalDetailsDTO.getAddress());
+        personalDetails.setCity(personalDetailsDTO.getCity());
+        personalDetails.setCountry(personalDetailsDTO.getCountry());
+        personalDetails.setPostalCode(personalDetailsDTO.getPostalCode());
+        personalDetails.setBank(personalDetailsDTO.getBank());
+        personalDetails.setBankAccount(personalDetailsDTO.getBankAccount());
+        personalDetails.setIdentityCard(personalDetailsDTO.getIdentityCard());
+        personalDetails.setIdentityCardSeries(personalDetailsDTO.getIdentityCardSeries());
+        personalDetails.setIdentityCardNumber(personalDetailsDTO.getIdentityCardNumber());
+        personalDetails.setRegisteredBy(personalDetailsDTO.getRegisteredBy());
+        personalDetails.setRegistrationDate(personalDetailsDTO.getRegistrationDate());
+        personalDetails.setCompanyPosition(personalDetailsDTO.getCompanyPosition());
+        personalDetails.setContractNumber(personalDetailsDTO.getContractNumber());
+        personalDetails.setContractStartDate(personalDetailsDTO.getContractStartDate());
+        return personalDetails;
+    }
+
+    public void updateFields(String email, PersonalDetailsDTO personalDetailsDTO) {
+        PersonalDetails personalDetailsToUpdate = personalDetailsRepository.findByUserEmail(email);
+
+        if(personalDetailsToUpdate == null) {
+            personalDetailsToUpdate = new PersonalDetails();
+            personalDetailsToUpdate.setUser(userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found")));
+        }
+
         if (personalDetailsDTO.getCNP() != null) {
             personalDetailsToUpdate.setCNP(personalDetailsDTO.getCNP());
         }
@@ -129,26 +141,5 @@ public class PersonalDetailsService {
             personalDetailsToUpdate.setDepartment(personalDetailsDTO.getDepartment());
         }
         personalDetailsRepository.save(personalDetailsToUpdate);
-    }
-
-    public PersonalDetails from(PersonalDetailsDTO personalDetailsDTO) {
-        PersonalDetails personalDetails = new PersonalDetails();
-        personalDetails.setCNP(personalDetailsDTO.getCNP());
-        personalDetails.setPhoneNumber(personalDetailsDTO.getPhoneNumber());
-        personalDetails.setAddress(personalDetailsDTO.getAddress());
-        personalDetails.setCity(personalDetailsDTO.getCity());
-        personalDetails.setCountry(personalDetailsDTO.getCountry());
-        personalDetails.setPostalCode(personalDetailsDTO.getPostalCode());
-        personalDetails.setBank(personalDetailsDTO.getBank());
-        personalDetails.setBankAccount(personalDetailsDTO.getBankAccount());
-        personalDetails.setIdentityCard(personalDetailsDTO.getIdentityCard());
-        personalDetails.setIdentityCardSeries(personalDetailsDTO.getIdentityCardSeries());
-        personalDetails.setIdentityCardNumber(personalDetailsDTO.getIdentityCardNumber());
-        personalDetails.setRegisteredBy(personalDetailsDTO.getRegisteredBy());
-        personalDetails.setRegistrationDate(personalDetailsDTO.getRegistrationDate());
-        personalDetails.setCompanyPosition(personalDetailsDTO.getCompanyPosition());
-        personalDetails.setContractNumber(personalDetailsDTO.getContractNumber());
-        personalDetails.setContractStartDate(personalDetailsDTO.getContractStartDate());
-        return personalDetails;
     }
 }

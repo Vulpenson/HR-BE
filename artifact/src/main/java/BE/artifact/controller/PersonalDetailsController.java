@@ -47,9 +47,9 @@ public class PersonalDetailsController {
         return ResponseEntity.ok("Personal details deleted");
     }
 
-    @PostMapping("/update/{id}")
-    public ResponseEntity<?> updatePersonalDetails(@PathVariable Integer id, @RequestBody PersonalDetails personalDetails) {
-        personalDetailsService.updatePersonalDetails(id, personalDetails);
+    @PostMapping("/update/{userEmail}")
+    public ResponseEntity<?> updatePersonalDetails(@PathVariable String userEmail, @RequestBody PersonalDetailsDTO personalDetails) {
+        personalDetailsService.updatePersonalDetails(userEmail, personalDetails);
         return ResponseEntity.ok("Personal details updated");
     }
 
