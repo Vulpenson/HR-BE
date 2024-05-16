@@ -21,6 +21,9 @@ public class JwtServiceImpl implements JwtService {
 
     @Value("${codingshadows.app.jwtSecret}")
     private String jwtSigningKey;
+
+    @Value("${codingshadows.app.jwtExpirationMs}")
+    private int jwtExpirationMs;
     @Override
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -45,7 +48,7 @@ public class JwtServiceImpl implements JwtService {
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
     }
 
