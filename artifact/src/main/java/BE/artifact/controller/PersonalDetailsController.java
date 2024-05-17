@@ -1,5 +1,6 @@
 package BE.artifact.controller;
 
+import BE.artifact.dto.PersonalDetailsDTO;
 import BE.artifact.model.PersonalDetails;
 import BE.artifact.service.PersonalDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +25,13 @@ public class PersonalDetailsController {
     }
 
     @PostMapping("/current/update")
-    public ResponseEntity<?> updatePersonalDetailsOfCurrentUser(@RequestBody PersonalDetails personalDetails) {
+    public ResponseEntity<?> updatePersonalDetailsOfCurrentUser(@RequestBody PersonalDetailsDTO personalDetails) {
         personalDetailsService.updatePersonalDetailsOfCurrentUser(personalDetails);
         return ResponseEntity.ok("Personal details updated");
     }
 
     @PostMapping("/current/save")
-    public ResponseEntity<?> savePersonalDetailsOfCurrentUser(@RequestBody PersonalDetails personalDetails) {
+    public ResponseEntity<?> savePersonalDetailsOfCurrentUser(@RequestBody PersonalDetailsDTO personalDetails) {
         personalDetailsService.savePersonalDetailsOfCurrentUser(personalDetails);
         return ResponseEntity.ok("Personal details saved");
     }
@@ -46,9 +47,9 @@ public class PersonalDetailsController {
         return ResponseEntity.ok("Personal details deleted");
     }
 
-    @PostMapping("/update/{id}")
-    public ResponseEntity<?> updatePersonalDetails(@PathVariable Integer id, @RequestBody PersonalDetails personalDetails) {
-        personalDetailsService.updatePersonalDetails(id, personalDetails);
+    @PostMapping("/update/{userEmail}")
+    public ResponseEntity<?> updatePersonalDetails(@PathVariable String userEmail, @RequestBody PersonalDetailsDTO personalDetails) {
+        personalDetailsService.updatePersonalDetails(userEmail, personalDetails);
         return ResponseEntity.ok("Personal details updated");
     }
 

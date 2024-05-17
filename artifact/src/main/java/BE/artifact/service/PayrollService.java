@@ -59,10 +59,13 @@ public class PayrollService {
         return payrollPage.map(PayrollDTO::from);
     }
 
-    public Payroll savePayroll(String Email, Payroll payroll) {
+    public void savePayroll(String Email, PayrollDTO payrollDTO) {
+        Payroll payroll = new Payroll();
+        payroll.setPayDate(payrollDTO.getPayDate());
+        payroll.setNetPay(payrollDTO.getNetPay());
         payroll.setUser(userRepository.findByEmail(Email)
                 .orElseThrow(() -> new RuntimeException("User not found")));
-        return payrollRepository.save(payroll);
+        payrollRepository.save(payroll);
     }
 
     public void deletePayroll(Long id) {

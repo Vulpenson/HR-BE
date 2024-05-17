@@ -1,5 +1,6 @@
 package BE.artifact.dto;
 
+import BE.artifact.model.PersonalDetails;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -22,14 +23,26 @@ public class PersonalDetailsDTO {
     private String companyPosition;
     private String contractNumber;
     private String contractStartDate;
+    private String department;
 
-    public static PersonalDetailsDTO from(String CNP, String phoneNumber, String address, String city, String country,
-                                   String postalCode, String bank, String bankAccount, String identityCard,
-                                   String identityCardSeries, String identityCardNumber, String registeredBy,
-                                   String registrationDate, String companyPosition, String contractNumber,
-                                   String contractStartDate) {
-        return new PersonalDetailsDTO(CNP, phoneNumber, address, city, country, postalCode, bank, bankAccount,
-                identityCard, identityCardSeries, identityCardNumber, registeredBy, registrationDate, companyPosition,
-                contractNumber, contractStartDate);
+    public static PersonalDetailsDTO from(PersonalDetails personalDetails) {
+        return new PersonalDetailsDTO(
+                personalDetails.getCNP(),
+                personalDetails.getPhoneNumber(),
+                personalDetails.getAddress(),
+                personalDetails.getCity(),
+                personalDetails.getCountry(),
+                personalDetails.getPostalCode(),
+                personalDetails.getBank(),
+                personalDetails.getBankAccount(),
+                personalDetails.getIdentityCard(),
+                personalDetails.getIdentityCardSeries(),
+                personalDetails.getIdentityCardNumber(),
+                personalDetails.getRegisteredBy(),
+                personalDetails.getRegistrationDate(),
+                personalDetails.getCompanyPosition(),
+                personalDetails.getContractNumber(),
+                personalDetails.getContractStartDate(),
+                personalDetails.getDepartment());
     }
 }
