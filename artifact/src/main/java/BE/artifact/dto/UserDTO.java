@@ -19,6 +19,7 @@ public class UserDTO {
     private List<PayrollDTO> payrolls;
     private PersonalDetailsDTO personalDetails;
     private Double grossPay;
+    private byte[] cvContent;
 
     public static UserDTO from(User user) {
         UserDTO userDTO = new UserDTO();
@@ -54,6 +55,7 @@ public class UserDTO {
             userDTO.setPersonalDetails(PersonalDetailsDTO.from(user.getPersonalDetails()));
         }
         userDTO.setGrossPay(user.getGrossPay());
+        userDTO.setCvContent(user.getCvContent());
         return userDTO;
     }
 }

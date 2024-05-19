@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.Date;
+
 @Entity
 @Data
 public class Feedback {
@@ -22,4 +24,6 @@ public class Feedback {
     @ProfanityCheck(message = "Please refrain from using inappropriate language!")
     private String feedback;
 
+    @NotNull
+    private Date dateSubmitted;
 }

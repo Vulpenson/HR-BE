@@ -12,4 +12,10 @@ public class RecommendationDTO {
     public static RecommendationDTO from(Recommendation recommendation) {
         return new RecommendationDTO(recommendation.getQuestionnaireResponse());
     }
+
+    public Recommendation toRecommendation() {
+        Recommendation recommendation = new Recommendation();
+        recommendation.setQuestionnaireResponse(this.questionnaireResponse);
+        return recommendation;
+    }
 }

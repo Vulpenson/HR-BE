@@ -1,8 +1,13 @@
 package BE.artifact.controller;
 
+import BE.artifact.dto.JobOfferDTO;
 import BE.artifact.model.recruiting.JobOffer;
 import BE.artifact.service.JobOfferService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +21,8 @@ public class JobOfferController {
     private final JobOfferService jobOfferService;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_HR')")
-    public ResponseEntity<JobOffer> createJobOffer(@RequestBody JobOffer jobOffer) {
+    @PreAuthorize("hasAuthority('ROLE_HR') or hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<JobOffer> createJobOffer(@RequestBody JobOfferDTO jobOffer) {
         JobOffer newJobOffer = jobOfferService.createJobOffer(jobOffer);
         return ResponseEntity.ok(newJobOffer);
     }
@@ -48,7 +53,13 @@ public class JobOfferController {
     }
 
     @GetMapping("/active")
-    public ResponseEntity<List<JobOffer>> getActiveJobOffers() {
-        return ResponseEntity.ok(jobOfferService.getActiveJobOffers());
+    public ResponseEntity<Page<JobOffer>> getActiveJobOffers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "creationDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String dir) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(dir), sortBy));
+        Page<JobOffer> jobOffersPage = jobOfferService.getActiveJobOffers(pageable);
+        return ResponseEntity.ok(jobOffersPage);
     }
 }

@@ -69,6 +69,8 @@ public class User implements UserDetails {
     private PersonalDetails personalDetails;
 
     // User's CV
+    @Lob
+    @Column(name = "cv_content", columnDefinition = "LONGBLOB")
     private byte[] cvContent;
 
     public User(String firstName, String lastName, String email, String password, UserRole role) {

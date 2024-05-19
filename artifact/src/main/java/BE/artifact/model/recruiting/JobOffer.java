@@ -4,6 +4,7 @@ package BE.artifact.model.recruiting;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -20,5 +21,6 @@ public class JobOffer {
     @OneToMany(mappedBy = "jobOffer")
     private List<Recommendation> recommendations;
 
+    private Date creationDate;
     private boolean active;
 }
