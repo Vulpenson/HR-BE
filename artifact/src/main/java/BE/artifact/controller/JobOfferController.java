@@ -53,13 +53,13 @@ public class JobOfferController {
     }
 
     @GetMapping("/active")
-    public ResponseEntity<Page<JobOffer>> getActiveJobOffers(
+    public ResponseEntity<Page<JobOfferDTO>> getActiveJobOffers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "creationDate") String sortBy,
             @RequestParam(defaultValue = "desc") String dir) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(dir), sortBy));
-        Page<JobOffer> jobOffersPage = jobOfferService.getActiveJobOffers(pageable);
+        Page<JobOfferDTO> jobOffersPage = jobOfferService.getActiveJobOffers(pageable);
         return ResponseEntity.ok(jobOffersPage);
     }
 }

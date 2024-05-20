@@ -19,11 +19,12 @@ public class Recommendation {
 
     @ManyToOne
     @JoinColumn(name = "job_offer_id")
+    @JsonBackReference
     private JobOffer jobOffer;
 
     private String questionnaireResponse;
 
     @Lob
-    private byte[] cvContent; // The CV file content
-
+    @Column(name = "cv_content", columnDefinition = "LONGBLOB")
+    private byte[] cvContent;
 }

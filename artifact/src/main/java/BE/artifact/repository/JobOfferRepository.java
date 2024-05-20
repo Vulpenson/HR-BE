@@ -1,5 +1,6 @@
 package BE.artifact.repository;
 
+import BE.artifact.dto.JobOfferDTO;
 import BE.artifact.model.recruiting.JobOffer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

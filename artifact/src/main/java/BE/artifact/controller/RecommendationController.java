@@ -64,12 +64,17 @@ public class RecommendationController {
     }
 
     @PostMapping("/apply-job")
-    public ResponseEntity<?> saveRecommendationOfCurrentUser() {
+    public ResponseEntity<?> saveRecommendationOfCurrentUser(@RequestParam Long jobOfferId) {
         try {
-            Recommendation recommendation = recommendationService.saveRecommendationOfCurrentUser();
+            Recommendation recommendation = recommendationService.saveRecommendationOfCurrentUser(jobOfferId);
             return ResponseEntity.ok().body(recommendation);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Failed to save recommendation");
         }
+    }
+
+    @GetMapping("/job-offer/{jobOfferId}")
+    public ResponseEntity<?> getRecommendationsForJobOffer(@PathVariable Long jobOfferId) {
+        return ResponseEntity.ok().body(recommendationService.getRecommendationsForJobOffer(jobOfferId));
     }
 }

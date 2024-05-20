@@ -10,6 +10,7 @@ import java.util.Collections;
 
 @Data
 public class JobOfferDTO {
+    private Long id;
     private String title;
     private String description;
     private String requirements;
@@ -19,6 +20,7 @@ public class JobOfferDTO {
 
     public static JobOfferDTO from(JobOffer jobOffer) {
         JobOfferDTO jobOfferDTO = new JobOfferDTO();
+        jobOfferDTO.setId(jobOffer.getId());
         jobOfferDTO.setTitle(jobOffer.getTitle());
         jobOfferDTO.setDescription(jobOffer.getDescription());
         jobOfferDTO.setRequirements(jobOffer.getRequirements());
@@ -30,6 +32,7 @@ public class JobOfferDTO {
 
     public JobOffer toJobOffer() {
         JobOffer jobOffer = new JobOffer();
+        jobOffer.setId(this.id);
         jobOffer.setTitle(this.title);
         jobOffer.setDescription(this.description);
         jobOffer.setRequirements(this.requirements);

@@ -17,7 +17,7 @@ public class JobOfferService {
     private final JobOfferRepository jobOfferRepository;
 
     public JobOffer createJobOffer(JobOfferDTO jobOffer) {
-        JobOffer newJobOffer = jobOfferRepository.save(jobOffer.toJobOffer());
+        JobOffer newJobOffer = jobOffer.toJobOffer();
         newJobOffer.setCreationDate(new Date());
         return jobOfferRepository.save(newJobOffer);
     }
@@ -45,7 +45,7 @@ public class JobOfferService {
         return null;
     }
 
-    public Page<JobOffer> getActiveJobOffers(Pageable pageable) {
-        return jobOfferRepository.findByActiveTrue(pageable);
+    public Page<JobOfferDTO> getActiveJobOffers(Pageable pageable) {
+        return jobOfferRepository.findByActiveTrue(pageable).map(JobOfferDTO::from);
     }
 }
