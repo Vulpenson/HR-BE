@@ -24,15 +24,23 @@ public class Absence {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
-    private User user; // Assuming you have a User entity for authentication
+    private User user;
 
     private LocalDate startDate;
     private LocalDate endDate;
-    private AbsenceType type; // e.g., VACATION, SICK_LEAVE, etc.
+    private AbsenceType type;
 
-    @OneToMany(mappedBy = "absence", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JsonManagedReference
-    private List<AbsenceDocument> documents = new ArrayList<>();
+//    @OneToMany(mappedBy = "absence", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+//    @JsonManagedReference
+//    private List<AbsenceDocument> documents = new ArrayList<>();
+    @Lob
+    @Column(columnDefinition = "BLOB", nullable = true, length = 1000000)
+    private byte[] document;
 
     private boolean approved;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id")
+    @JsonBackReference
+    private User manager;
 }

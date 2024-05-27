@@ -6,7 +6,6 @@ import BE.artifact.model.absence.Absence;
 import BE.artifact.repository.AbsenceRepository;
 import BE.artifact.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +30,7 @@ public class AbsenceService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentEmail = authentication.getName();
         System.out.println("Current email: " + currentEmail);
+        System.out.println("Absence DTO: " + absenceDTO);
 
         User user = userRepository.findByEmail(currentEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -51,7 +51,7 @@ public class AbsenceService {
         absence.setEndDate(absenceDTO.getEndDate());
         absence.setType(absenceDTO.getType());
         absence.setApproved(absenceDTO.getApproved());
-        // Set the user reference here if necessary
+        absence.setDocument(absenceDTO.getDocument());
         return absence;
     }
 
@@ -91,6 +91,7 @@ public class AbsenceService {
         absence.setEndDate(absenceDTO.getEndDate());
         absence.setType(absenceDTO.getType());
         absence.setApproved(absenceDTO.getApproved());
+        absence.setDocument(absenceDTO.getDocument());
         Absence updatedAbsence = absenceRepository.save(absence);
         return ResponseEntity.ok(updatedAbsence);
     }
@@ -105,8 +106,8 @@ public class AbsenceService {
     }
 
     // Method to get all absences for a specific user
-    public List<Absence> getAbsencesByUserEmail(String email) {
-        return absenceRepository.findByUserEmail(email);
+    public List<AbsenceDTO> getAbsencesByUserEmail(String email) {
+        return absenceRepository.findByUserEmail(email).stream().map(AbsenceDTO::from).toList();
     }
 
     public ResponseEntity<AbsenceDTO> getLastAbsence() {

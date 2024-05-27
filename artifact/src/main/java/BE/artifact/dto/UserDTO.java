@@ -27,33 +27,12 @@ public class UserDTO {
         userDTO.setLastName(user.getLastName());
         userDTO.setEmail(user.getEmail());
         userDTO.setRole(user.getRole().name());
-        if(user.getAbsences() == null) userDTO.setAbsences(Collections.emptyList());
-        userDTO.setAbsences(user.getAbsences().stream().map(AbsenceDTO::from).toList());
-        if(user.getOnboarding() == null) {
-            userDTO.setOnboarding(null);
-        } else {
-            userDTO.setOnboarding(OnboardingDTO.from(user.getOnboarding()));
-        }
-        if (user.getOffboarding() == null) {
-            userDTO.setOffboarding(null);
-        } else {
-            userDTO.setOffboarding(OffboardingDTO.from(user.getOffboarding()));
-        }
-        if (user.getRecommendations() == null) {
-            userDTO.setRecommendations(Collections.emptyList());
-        } else {
-            userDTO.setRecommendations(user.getRecommendations().stream().map(RecommendationDTO::from).toList());
-        }
-        if (user.getPayrolls() == null) {
-            userDTO.setPayrolls(Collections.emptyList());
-        } else {
-            userDTO.setPayrolls(user.getPayrolls().stream().map(PayrollDTO::from).toList());
-        }
-        if (user.getPersonalDetails() == null) {
-            userDTO.setPersonalDetails(null);
-        } else {
-            userDTO.setPersonalDetails(PersonalDetailsDTO.from(user.getPersonalDetails()));
-        }
+        userDTO.setAbsences(user.getAbsences() != null ? user.getAbsences().stream().map(AbsenceDTO::from).toList() : Collections.emptyList());
+        userDTO.setOnboarding(user.getOnboarding() != null ? OnboardingDTO.from(user.getOnboarding()) : null);
+        userDTO.setOffboarding(user.getOffboarding() != null ? OffboardingDTO.from(user.getOffboarding()) : null);
+        userDTO.setRecommendations(user.getRecommendations() != null ? user.getRecommendations().stream().map(RecommendationDTO::from).toList() : Collections.emptyList());
+        userDTO.setPayrolls(user.getPayrolls() != null ? user.getPayrolls().stream().map(PayrollDTO::from).toList() : Collections.emptyList());
+        userDTO.setPersonalDetails(user.getPersonalDetails() != null ? PersonalDetailsDTO.from(user.getPersonalDetails()) : null);
         userDTO.setGrossPay(user.getGrossPay());
         userDTO.setCvContent(user.getCvContent());
         return userDTO;
