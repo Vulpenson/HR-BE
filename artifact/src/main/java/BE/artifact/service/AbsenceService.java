@@ -11,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -52,6 +54,7 @@ public class AbsenceService {
         absence.setType(absenceDTO.getType());
         absence.setApproved(absenceDTO.getApproved());
         absence.setDocument(absenceDTO.getDocument());
+        absence.setManager(userRepository.findByEmail(absenceDTO.getManagerEmail()).orElse(null));
         return absence;
     }
 
@@ -115,6 +118,30 @@ public class AbsenceService {
         if (absences.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(AbsenceDTO.from(absences.get(absences.size() - 1)));
+
+        List<Absence> pastAbsences = absences.stream()
+                .filter(absence -> absence.getEndDate().isBefore(LocalDate.now()))
+                .toList();
+
+        Absence lastAbsence = pastAbsences.stream()
+                .max(Comparator.comparing(Absence::getEndDate))
+                .orElseThrow();
+        return ResponseEntity.ok(AbsenceDTO.from(lastAbsence));
+    }
+
+    public ResponseEntity<byte[]> getDocument(Long id) {
+        Absence absence = absenceRepository.findById(id).orElse(null);
+        if (absence == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(absence.getDocument());
+    }
+
+    public List<Absence> getAbsencesByUserEmailNoDTO(String email) {
+        return absenceRepository.findByUserEmail(email);
+    }
+
+    public boolean hasUnapprovedAbsences(String email) {
+        return absenceRepository.findByUserEmail(email).stream().anyMatch(absence -> !absence.isApproved());
     }
 }

@@ -27,9 +27,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-//    @Convert(converter = AttributeEncryptor.class)
     private String firstName;
-//    @Convert(converter = AttributeEncryptor.class)
     private String lastName;
     @Column(unique = true)
     private String email;
@@ -67,6 +65,11 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonManagedReference
     private PersonalDetails personalDetails;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id")
+    @JsonManagedReference
+    private User manager;
 
     // User's CV
     @Lob

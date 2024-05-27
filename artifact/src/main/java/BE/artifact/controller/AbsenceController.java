@@ -4,6 +4,7 @@ import BE.artifact.dto.AbsenceDTO;
 import BE.artifact.model.absence.Absence;
 import BE.artifact.model.absence.AbsenceType;
 import BE.artifact.service.AbsenceService;
+import org.hibernate.validator.internal.constraintvalidators.bv.notempty.NotEmptyValidatorForArraysOfLong;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -77,8 +78,23 @@ public class AbsenceController {
         return absenceService.getAbsencesByUserEmail(email);
     }
 
+    @GetMapping("/user/nodto/{email}")
+    public List<Absence> getAbsencesByUserEmailNoDTO(@PathVariable String email) {
+        return absenceService.getAbsencesByUserEmailNoDTO(email);
+    }
+
     @GetMapping("/last")
     public ResponseEntity<AbsenceDTO> getLastAbsence() {
         return absenceService.getLastAbsence();
+    }
+
+    @GetMapping("/document/{id}")
+    public ResponseEntity<byte[]> getDocument(@PathVariable Long id) {
+        return absenceService.getDocument(id);
+    }
+
+    @GetMapping("/has-unapproved/{email}")
+    public boolean hasUnapprovedAbsences(@PathVariable String email) {
+        return absenceService.hasUnapprovedAbsences(email);
     }
 }

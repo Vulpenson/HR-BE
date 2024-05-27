@@ -20,6 +20,7 @@ public class UserDTO {
     private PersonalDetailsDTO personalDetails;
     private Double grossPay;
     private byte[] cvContent;
+    private String managerEmail;
 
     public static UserDTO from(User user) {
         UserDTO userDTO = new UserDTO();
@@ -35,6 +36,7 @@ public class UserDTO {
         userDTO.setPersonalDetails(user.getPersonalDetails() != null ? PersonalDetailsDTO.from(user.getPersonalDetails()) : null);
         userDTO.setGrossPay(user.getGrossPay());
         userDTO.setCvContent(user.getCvContent());
+        userDTO.setManagerEmail(user.getManager() != null ? user.getManager().getEmail() : null);
         return userDTO;
     }
 }

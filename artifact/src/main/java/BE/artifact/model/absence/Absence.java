@@ -30,9 +30,6 @@ public class Absence {
     private LocalDate endDate;
     private AbsenceType type;
 
-//    @OneToMany(mappedBy = "absence", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-//    @JsonManagedReference
-//    private List<AbsenceDocument> documents = new ArrayList<>();
     @Lob
     @Column(columnDefinition = "BLOB", nullable = true, length = 1000000)
     private byte[] document;
