@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 @CrossOrigin
@@ -79,6 +80,31 @@ public class UserController {
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
                     .body(file);
         } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/subordinates")
+    public ResponseEntity<List<String>> getSubordinates() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+            List<String> subordinatesEmails = userService.getSubordinatesEmails(email);
+            return ResponseEntity.ok(subordinatesEmails);
+        } catch (Exception e) {
+            logger.info("Error getting subordinates");
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/set-manager")
+    @PreAuthorize("hasRole('ROLE_HR') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<String> setManager(@RequestParam String userEmail, @RequestParam String managerEmail) {
+        try {
+            userService.setManager(userEmail, managerEmail);
+            return ResponseEntity.ok("Manager set successfully");
+        } catch (Exception e) {
+            logger.info("Error setting manager");
             throw new RuntimeException(e);
         }
     }

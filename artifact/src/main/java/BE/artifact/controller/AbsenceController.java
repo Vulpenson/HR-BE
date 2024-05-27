@@ -2,11 +2,17 @@ package BE.artifact.controller;
 
 import BE.artifact.dto.AbsenceDTO;
 import BE.artifact.model.absence.Absence;
+import BE.artifact.model.absence.AbsenceType;
 import BE.artifact.service.AbsenceService;
+import org.hibernate.validator.internal.constraintvalidators.bv.notempty.NotEmptyValidatorForArraysOfLong;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -26,7 +32,13 @@ public class AbsenceController {
     }
 
     @PostMapping("/add-current-user")
-    public ResponseEntity<Absence> addAbsenceForCurrentUser(@RequestBody AbsenceDTO absenceDTO) {
+    public ResponseEntity<Absence> addAbsenceForCurrentUser(@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                                            @RequestParam("type") AbsenceType type,
+                                                            @RequestParam("approved") Boolean approved,
+                                                            @RequestParam("managerEmail") String managerEmail,
+                                                            @RequestParam(value = "document", required = false) MultipartFile document) throws IOException {
+        AbsenceDTO absenceDTO = new AbsenceDTO(startDate, endDate, type, approved, managerEmail, document != null ? document.getBytes() : null);
         return absenceService.addAbsenceForCurrentUser(absenceDTO);
     }
 
@@ -62,12 +74,27 @@ public class AbsenceController {
     }
 
     @GetMapping("/user/{email}")
-    public List<Absence> getAbsencesByUserEmail(@PathVariable String email) {
+    public List<AbsenceDTO> getAbsencesByUserEmail(@PathVariable String email) {
         return absenceService.getAbsencesByUserEmail(email);
+    }
+
+    @GetMapping("/user/nodto/{email}")
+    public List<Absence> getAbsencesByUserEmailNoDTO(@PathVariable String email) {
+        return absenceService.getAbsencesByUserEmailNoDTO(email);
     }
 
     @GetMapping("/last")
     public ResponseEntity<AbsenceDTO> getLastAbsence() {
         return absenceService.getLastAbsence();
+    }
+
+    @GetMapping("/document/{id}")
+    public ResponseEntity<byte[]> getDocument(@PathVariable Long id) {
+        return absenceService.getDocument(id);
+    }
+
+    @GetMapping("/has-unapproved/{email}")
+    public boolean hasUnapprovedAbsences(@PathVariable String email) {
+        return absenceService.hasUnapprovedAbsences(email);
     }
 }

@@ -6,12 +6,13 @@ import BE.artifact.model.absence.Absence;
 import BE.artifact.repository.AbsenceRepository;
 import BE.artifact.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -31,6 +32,7 @@ public class AbsenceService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentEmail = authentication.getName();
         System.out.println("Current email: " + currentEmail);
+        System.out.println("Absence DTO: " + absenceDTO);
 
         User user = userRepository.findByEmail(currentEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -51,7 +53,8 @@ public class AbsenceService {
         absence.setEndDate(absenceDTO.getEndDate());
         absence.setType(absenceDTO.getType());
         absence.setApproved(absenceDTO.getApproved());
-        // Set the user reference here if necessary
+        absence.setDocument(absenceDTO.getDocument());
+        absence.setManager(userRepository.findByEmail(absenceDTO.getManagerEmail()).orElse(null));
         return absence;
     }
 
@@ -91,6 +94,7 @@ public class AbsenceService {
         absence.setEndDate(absenceDTO.getEndDate());
         absence.setType(absenceDTO.getType());
         absence.setApproved(absenceDTO.getApproved());
+        absence.setDocument(absenceDTO.getDocument());
         Absence updatedAbsence = absenceRepository.save(absence);
         return ResponseEntity.ok(updatedAbsence);
     }
@@ -105,8 +109,8 @@ public class AbsenceService {
     }
 
     // Method to get all absences for a specific user
-    public List<Absence> getAbsencesByUserEmail(String email) {
-        return absenceRepository.findByUserEmail(email);
+    public List<AbsenceDTO> getAbsencesByUserEmail(String email) {
+        return absenceRepository.findByUserEmail(email).stream().map(AbsenceDTO::from).toList();
     }
 
     public ResponseEntity<AbsenceDTO> getLastAbsence() {
@@ -114,6 +118,30 @@ public class AbsenceService {
         if (absences.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(AbsenceDTO.from(absences.get(absences.size() - 1)));
+
+        List<Absence> pastAbsences = absences.stream()
+                .filter(absence -> absence.getEndDate().isBefore(LocalDate.now()))
+                .toList();
+
+        Absence lastAbsence = pastAbsences.stream()
+                .max(Comparator.comparing(Absence::getEndDate))
+                .orElseThrow();
+        return ResponseEntity.ok(AbsenceDTO.from(lastAbsence));
+    }
+
+    public ResponseEntity<byte[]> getDocument(Long id) {
+        Absence absence = absenceRepository.findById(id).orElse(null);
+        if (absence == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(absence.getDocument());
+    }
+
+    public List<Absence> getAbsencesByUserEmailNoDTO(String email) {
+        return absenceRepository.findByUserEmail(email);
+    }
+
+    public boolean hasUnapprovedAbsences(String email) {
+        return absenceRepository.findByUserEmail(email).stream().anyMatch(absence -> !absence.isApproved());
     }
 }

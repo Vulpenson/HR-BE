@@ -2,6 +2,7 @@ package BE.artifact.service.impl;
 
 import BE.artifact.dto.UserDTO;
 import BE.artifact.model.User;
+import BE.artifact.model.UserRole;
 import BE.artifact.repository.UserRepository;
 import BE.artifact.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -72,5 +74,43 @@ public class UserServiceImpl implements UserService {
     public Resource downloadCV(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         return user.map(value -> new ByteArrayResource(value.getCvContent())).orElse(null);
+    }
+
+    @Transactional
+    @Override
+    public void updateUser(UserDTO userDTO) {
+        User user = userRepository.findByEmail(userDTO.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setRole(UserRole.valueOf(userDTO.getRole()));
+        userRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public void updatePassword(String email, String password) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setPassword(password);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void setManager(String email, String managerEmail) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        User manager = userRepository.findByEmail(managerEmail)
+                .orElseThrow(() -> new RuntimeException("Manager not found"));
+        user.setManager(manager);
+        userRepository.save(user);
+    }
+
+    @Override
+    public List<String> getSubordinatesEmails(String managerEmail) {
+        return userRepository.findByManagerEmail(managerEmail)
+                .stream()
+                .map(User::getEmail)
+                .toList();
     }
 }

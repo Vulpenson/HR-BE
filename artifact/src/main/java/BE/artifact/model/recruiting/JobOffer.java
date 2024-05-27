@@ -16,7 +16,11 @@ public class JobOffer {
     private Long id;
 
     private String title;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Column(columnDefinition = "TEXT")
     private String requirements;
 
     @OneToMany(mappedBy = "jobOffer")
