@@ -9,6 +9,7 @@ import BE.artifact.service.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -85,4 +86,29 @@ public class AuthenticationController {
         request.getSession().invalidate();
         return ResponseEntity.ok("User signed out successfully");
     }
+
+    @PostMapping("/request-password-reset")
+    public ResponseEntity<String> requestPasswordReset(@RequestParam String email) {
+        try {
+            userService.sendPasswordResetToken(email);
+            return ResponseEntity.ok("Password reset link sent to your email.");
+        } catch (Exception e) {
+            logger.severe("Error sending password reset link." + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error sending password reset link.");
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam("token") String token, @RequestParam("newPassword") String newPassword) {
+        try {
+            userService.resetPassword(token, newPassword);
+            return ResponseEntity.ok("Password reset successfully.");
+        } catch (Exception e) {
+            logger.severe("Error resetting password." + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error resetting password.");
+        }
+    }
+
 }

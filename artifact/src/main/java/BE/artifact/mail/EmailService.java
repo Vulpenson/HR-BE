@@ -11,10 +11,4 @@ public interface EmailService {
                                    String subject,
                                    String text,
                                    String pathToAttachment);
-
-
-//    void sendMessageUsingFreemarkerTemplate(String to,
-//                                            String subject,
-//                                            Map<String, Object> templateModel)
-//            throws IOException, TemplateException, MessagingException;
 }
