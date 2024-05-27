@@ -20,7 +20,7 @@ public class OnboardingController {
 
     @PostMapping("/start/{email}")
     public ResponseEntity<Onboarding> startOnboarding(@PathVariable String email) {
-        return onboardingService.startOnboardingForUser(userRepository.findByEmail(email).orElseThrow());
+        return onboardingService.startOnboardingForUser(email);
     }
 
     @GetMapping("/all")
@@ -30,7 +30,12 @@ public class OnboardingController {
 
     @GetMapping("/user/{email}")
     public ResponseEntity<Onboarding> getOnboardingForUser(@PathVariable String email) {
-        return ResponseEntity.ok(onboardingService.getOnboardingForUser(userRepository.findByEmail(email).orElseThrow()));
+        Onboarding onboarding = onboardingService.getOnboardingForUser(email);
+        if (onboarding == null) {
+            logger.severe("Onboarding process not found");
+            throw new RuntimeException("Onboarding process not found");
+        }
+        return ResponseEntity.ok(onboarding);
     }
 
     @PatchMapping("/badge/{onboardingId}")
