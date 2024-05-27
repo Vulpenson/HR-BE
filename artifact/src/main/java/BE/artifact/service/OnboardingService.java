@@ -3,6 +3,7 @@ package BE.artifact.service;
 import BE.artifact.model.Onboarding;
 import BE.artifact.model.User;
 import BE.artifact.repository.OnboardingRepository;
+import BE.artifact.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +13,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OnboardingService {
     private final OnboardingRepository onboardingRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public ResponseEntity<Onboarding> startOnboardingForUser(User user) {
+    public ResponseEntity<Onboarding> startOnboardingForUser(String email) {
         Onboarding onboarding = new Onboarding();
-        onboarding.setUser(user);
+        onboarding.setUser(userRepository.findByEmail(email).orElseThrow());
         onboarding.setBadgeObtained(false);
         onboarding.setHardwareAcquired(false);
         return ResponseEntity.ok(onboardingRepository.save(onboarding));
@@ -26,9 +28,8 @@ public class OnboardingService {
         return onboardingRepository.findAll();
     }
 
-    public Onboarding getOnboardingForUser(User user) {
-        return onboardingRepository.findById(user.getId().longValue())
-                .orElseThrow(() -> new RuntimeException("Onboarding process not found"));
+    public Onboarding getOnboardingForUser(String email) {
+        return onboardingRepository.findByUserEmail(email);
     }
 
     @Transactional

@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OnboardingRepository extends JpaRepository<Onboarding, Long> {
+    Onboarding findByUserEmail(String email);
 }
