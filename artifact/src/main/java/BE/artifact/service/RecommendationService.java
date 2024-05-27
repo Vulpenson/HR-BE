@@ -1,6 +1,7 @@
 package BE.artifact.service;
 
 import BE.artifact.controller.RecommendationController;
+import BE.artifact.dto.RecommendationDTO;
 import BE.artifact.model.User;
 import BE.artifact.model.recruiting.JobOffer;
 import BE.artifact.model.recruiting.Recommendation;
@@ -15,6 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.modelmapper.Converters.Collection.map;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +30,7 @@ public class RecommendationService {
 
     Logger logger = Logger.getLogger(RecommendationService.class.getName());
 
-
-    public Recommendation saveRecommendation(Long jobOfferId, String questionnaireResponse,MultipartFile cvFile) throws IOException {
+    public Recommendation saveRecommendation(Long jobOfferId, String questionnaireResponse, MultipartFile cvFile) throws IOException {
         try {
             Recommendation recommendation = new Recommendation();
 
@@ -38,7 +42,7 @@ public class RecommendationService {
             recommendation.setUser(user);
 
             // Fetch the job offer
-            JobOffer jobOffer = jobOfferRepository.findById(jobOfferId).orElseThrow();
+            JobOffer jobOffer = jobOfferRepository.findById(jobOfferId).orElseThrow(() -> new RuntimeException("Job Offer not found"));
             recommendation.setJobOffer(jobOffer);
 
             // Set the questionnaire response
@@ -87,21 +91,36 @@ public class RecommendationService {
         }
     }
 
-    public Recommendation saveRecommendationOfCurrentUser() {
+    public Recommendation saveRecommendationOfCurrentUser(Long jobOfferId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String currentEmail = authentication.getName();
             User user = userRepository.findByEmail(currentEmail)
                     .orElseThrow(() -> new RuntimeException("User not found"));
             byte[] cvContent = user.getCvContent();
+
+            JobOffer jobOffer = jobOfferRepository.findById(jobOfferId)
+                    .orElseThrow(() -> new RuntimeException("Job Offer not found"));
+
             Recommendation recommendation = new Recommendation();
             recommendation.setUser(user);
+            recommendation.setJobOffer(jobOffer);
             recommendation.setQuestionnaireResponse("Self-recommendation");
             recommendation.setCvContent(cvContent);
+
             return recommendationRepository.save(recommendation);
         } catch (Exception e) {
             logger.severe("Failed to save recommendation for the current user");
             throw new RuntimeException(e);
         }
+    }
+
+    public Iterable<RecommendationDTO> getRecommendationsForJobOffer(Long jobOfferId) {
+        JobOffer jobOffer = jobOfferRepository.findById(jobOfferId)
+                .orElseThrow(() -> new RuntimeException("Job Offer not found"));
+        Iterable<Recommendation> recommendations = recommendationRepository.findByJobOffer(jobOffer);
+        return StreamSupport.stream(recommendations.spliterator(), false)
+                .map(RecommendationDTO::from)
+                .collect(Collectors.toList());
     }
 }

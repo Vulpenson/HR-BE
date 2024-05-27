@@ -4,13 +4,19 @@ import BE.artifact.dto.UserDTO;
 import BE.artifact.service.AuthenticationService;
 import BE.artifact.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.logging.Logger;
 
@@ -50,6 +56,29 @@ public class UserController {
             return ResponseEntity.ok("User deleted");
         } catch (Exception e) {
             logger.info("Error deleting user");
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/upload-cv")
+    public ResponseEntity<String> uploadCv(@RequestParam("file") MultipartFile file) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        userService.uploadCV(email, file);
+        return ResponseEntity.ok("CV uploaded successfully");
+    }
+
+    @GetMapping("/download-cv")
+    public ResponseEntity<Resource> downloadCv() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+            Resource file = userService.downloadCV(email);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
+                    .body(file);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
