@@ -13,5 +13,6 @@ public class PdfTemplate {
     private String name;
 
     @Lob
+    @Column(columnDefinition = "LONGBLOB", nullable = true, length = 100000000)
     private byte[] content;
 }
