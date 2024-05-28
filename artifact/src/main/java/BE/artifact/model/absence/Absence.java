@@ -31,7 +31,7 @@ public class Absence {
     private AbsenceType type;
 
     @Lob
-    @Column(columnDefinition = "BLOB", nullable = true, length = 1000000)
+    @Column(columnDefinition = "LONGBLOB", nullable = true, length = 100000000)
     private byte[] document;
 
     private boolean approved;

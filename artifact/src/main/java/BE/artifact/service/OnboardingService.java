@@ -28,8 +28,13 @@ public class OnboardingService {
         return onboardingRepository.findAll();
     }
 
+    @Transactional
     public Onboarding getOnboardingForUser(String email) {
-        return onboardingRepository.findByUserEmail(email);
+        Onboarding onboarding = onboardingRepository.findByUserEmail(email);
+        if (onboarding == null) {
+            onboarding = startOnboardingForUser(email).getBody();
+        }
+        return onboarding;
     }
 
     @Transactional

@@ -11,6 +11,7 @@ import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -53,7 +55,8 @@ public class PdfFormFillerService {
         return baos.toByteArray();
     }
 
-    public byte[] fillPdfTemplate(Long templateId) throws Exception {
+    @Transactional
+    public byte[] fillPdfTemplate(Long templateId, String reason) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentEmail = authentication.getName();
 
@@ -68,27 +71,7 @@ public class PdfFormFillerService {
         PdfDocument pdfDoc = new PdfDocument(reader, writer);
         PdfAcroForm form = PdfAcroForm.getAcroForm(pdfDoc, true);
 
-        Map<String, String> formData = Map.of(
-                "name", details.getUser().getFirstName(),
-                "email", details.getUser().getEmail(),
-                "cnp", details.getCNP(),
-                "phone", details.getPhoneNumber(),
-                "address", details.getAddress(),
-                "city", details.getCity(),
-                "country", details.getCountry(),
-                "postal_code", details.getPostalCode(),
-                "bank", details.getBank(),
-                "bank_account", details.getBankAccount()
-        );
-
-        formData.put("identity_card", details.getIdentityCard());
-        formData.put("identity_card_series", details.getIdentityCardSeries());
-        formData.put("identity_card_number", details.getIdentityCardNumber());
-        formData.put("registered_by", details.getRegisteredBy());
-        formData.put("registration_date", details.getRegistrationDate());
-        formData.put("company_position", details.getCompanyPosition());
-        formData.put("contract_number", details.getContractNumber());
-        formData.put("contract_start_date", details.getContractStartDate());
+        Map<String, String> formData = getStringStringMap(reason, details);
 
         formData.forEach((key, value) -> {
             PdfFormField field = form.getField(key);
@@ -100,5 +83,26 @@ public class PdfFormFillerService {
         form.flattenFields();
         pdfDoc.close();
         return baos.toByteArray();
+    }
+
+    private static Map<String, String> getStringStringMap(String reason, PersonalDetails details) {
+        String name = details.getUser().getFirstName() + " " + details.getUser().getLastName();
+        String grossPay = details.getUser().getGrossPay().toString();
+
+        Map<String, String> formData = new HashMap<>();
+        formData.put("name", name);
+        formData.put("address", details.getAddress());
+        formData.put("cnp", details.getCNP());
+        formData.put("identityCard", details.getIdentityCard());
+        formData.put("identityCardSeries", details.getIdentityCardSeries());
+        formData.put("identityCardNumber", details.getIdentityCardNumber());
+        formData.put("registeredBy", details.getRegisteredBy());
+        formData.put("registrationDate", details.getRegistrationDate());
+        formData.put("contractStartDate", details.getContractStartDate());
+        formData.put("companyPosition", details.getCompanyPosition());
+        formData.put("grossPay", grossPay);
+        formData.put("contractNumber", details.getContractNumber());
+        formData.put("reason", reason);
+        return formData;
     }
 }
