@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @Service
 public class PdfFormFillerService {
@@ -30,6 +31,8 @@ public class PdfFormFillerService {
 
     @Autowired
     private PersonalDetailsRepository personalDetailsRepository;
+
+    Logger logger = Logger.getLogger(PdfFormFillerService.class.getName());
 
     public byte[] generatePersonalDetailsDocument() throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -79,6 +82,8 @@ public class PdfFormFillerService {
                 field.setValue(value);
             }
         });
+
+        logger.severe(formData.toString());;
 
         form.flattenFields();
         pdfDoc.close();
