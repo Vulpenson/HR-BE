@@ -1,31 +1,45 @@
 package BE.artifact.service.impl;
 
 import BE.artifact.dto.UserDTO;
+import BE.artifact.mail.EmailService;
+import BE.artifact.model.PasswordResetToken;
 import BE.artifact.model.User;
 import BE.artifact.model.UserRole;
+import BE.artifact.repository.TokenRepository;
 import BE.artifact.repository.UserRepository;
 import BE.artifact.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
+
+//    @Value("${reset-password.base-url}")
+    private final String resetPasswordBaseURL = "http://localhost:3000";
+
     @Override
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -104,6 +118,55 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("Manager not found"));
         user.setManager(manager);
         userRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public void sendPasswordResetToken(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Generate a reset token
+        String token = UUID.randomUUID().toString();
+
+        LocalDateTime expiryDate = LocalDateTime.now().plusHours(1);
+
+        // Save the token in the database
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setToken(token);
+        resetToken.setExpiryDate(expiryDate);
+        resetToken.setUser(user);
+
+        tokenRepository.save(resetToken);
+
+        // Send email
+        sendResetEmail(user.getEmail(), token);
+    }
+
+    @Override
+    public void sendResetEmail(String email, String token) {
+        String resetURL = resetPasswordBaseURL + "/reset-password?token=" + token;
+        String subject = "Password Reset Request";
+        String message = "To reset your password, click the link below:\n" + resetURL;
+
+        emailService.sendSimpleMessage(email, subject, message);
+    }
+
+    @Override
+    public void resetPassword(String token, String newPassword) {
+        PasswordResetToken resetToken = tokenRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("Invalid token or token expired"));
+
+        if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Token has expired");
+        }
+
+        User user = resetToken.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        // Invalidate the token
+        tokenRepository.delete(resetToken);
     }
 
     @Override

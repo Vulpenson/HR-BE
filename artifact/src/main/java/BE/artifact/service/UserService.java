@@ -20,4 +20,7 @@ public interface UserService {
     void updatePassword(String email, String password);
     List<String> getSubordinatesEmails(String email);
     void setManager(String email, String managerEmail);
+    void sendPasswordResetToken(String email);
+    void sendResetEmail(String email, String token);
+    void resetPassword(String email, String password);
 }

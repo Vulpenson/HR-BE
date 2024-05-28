@@ -35,9 +35,10 @@ public class EmailServiceImpl implements EmailService {
             emailSender.send(message);
             return "Mail Sent Successfully";
         } catch (MailException exception) {
-            logger.error("Error while sending mail: " + exception.getMessage());
+            logger.error("Error while sending mail: {}", exception.getMessage());
+            exception.printStackTrace();
+            return "Mail NOT Sent";
         }
-        return "Mail NOT Sent";
     }
 
     @Override
