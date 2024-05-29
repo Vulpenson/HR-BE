@@ -70,4 +70,24 @@ public class PersonalDetails {
 
     @Convert(converter = AttributeEncryptor.class)
     private String department;
+
+    public void setEmptyFields() {
+        this.CNP = "";
+        this.phoneNumber = "";
+        this.address = "";
+        this.city = "";
+        this.country = "";
+        this.postalCode = "";
+        this.bank = "";
+        this.bankAccount = "";
+        this.identityCard = "";
+        this.identityCardSeries = "";
+        this.identityCardNumber = "";
+        this.registeredBy = "";
+        this.registrationDate = "";
+        this.companyPosition = "";
+        this.contractNumber = "";
+        this.contractStartDate = "";
+        this.department = "";
+    }
 }

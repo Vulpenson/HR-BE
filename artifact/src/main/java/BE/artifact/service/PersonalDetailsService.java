@@ -34,7 +34,15 @@ public class PersonalDetailsService {
     public PersonalDetails getPersonalDetailsOfCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentEmail = authentication.getName();
-        return personalDetailsRepository.findByUserEmail(currentEmail);
+        PersonalDetails personalDetails = personalDetailsRepository.findByUserEmail(currentEmail);
+        if(personalDetails == null) {
+            personalDetails = new PersonalDetails();
+            personalDetails.setUser(userRepository.findByEmail(currentEmail)
+                    .orElseThrow(() -> new RuntimeException("User not found")));
+            personalDetails.setEmptyFields();
+            savePersonalDetails(personalDetails);
+        }
+        return personalDetails;
     }
 
     public void deletePersonalDetailsOfCurrentUser() {
