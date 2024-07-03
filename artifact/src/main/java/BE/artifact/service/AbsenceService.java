@@ -113,8 +113,8 @@ public class AbsenceService {
         return absenceRepository.findByUserEmail(email).stream().map(AbsenceDTO::from).toList();
     }
 
-    public ResponseEntity<AbsenceDTO> getLastAbsence() {
-        List<Absence> absences = absenceRepository.findAll();
+    public ResponseEntity<AbsenceDTO> getLastAbsence(String email) {
+        List<Absence> absences = absenceRepository.findByUserEmail(email);
         if (absences.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

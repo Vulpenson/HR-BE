@@ -28,7 +28,7 @@ public class AuthenticationIntegrationTest {
 
     @Test
     public void whenSignInWithValidCredentials_thenGeneratesJwtToken() throws Exception {
-        // Assuming you have a user "user@example.com" with password "password"
+        // Assuming you have a user "test@gmail.com" with password "test"
         SignInRequest signInRequest = new SignInRequest("test@gmail.com", "test");
 
         mockMvc.perform(post("/api/auth/signin")

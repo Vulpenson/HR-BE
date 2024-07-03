@@ -12,5 +12,4 @@ import java.util.Optional;
 @Repository
 public interface AbsenceRepository extends JpaRepository<Absence, Long> {
     List<Absence> findByUserEmail(String email);
-
 }

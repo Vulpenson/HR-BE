@@ -29,7 +29,11 @@ public class PayrollController {
 
     @GetMapping("/last")
     public ResponseEntity<?> getYourLastPayroll() {
-        return ResponseEntity.ok(payrollService.getYourLastPayroll());
+        try {
+            return ResponseEntity.ok(payrollService.getYourLastPayroll());
+        } catch (Exception e) {
+            throw new RuntimeException("There is no last payroll", e);
+        }
     }
 
     @GetMapping("/user/all")
